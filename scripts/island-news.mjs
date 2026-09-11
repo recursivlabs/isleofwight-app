@@ -13,6 +13,10 @@ const FEEDS = [
   ['Island Echo', 'https://www.islandecho.co.uk/feed/'],
 ];
 const H = { Authorization: `Bearer ${key}` };
+// Hashtags make the trending widgets real: every story carries the island tag,
+// plus any town it names.
+const TOWNS = ['Newport','Ryde','Cowes','East Cowes','Sandown','Shanklin','Ventnor','Yarmouth','Freshwater','Bembridge','Brading','Wootton','Godshill','Niton','Totland','Seaview','St Helens','Wroxall','Carisbrooke','Gurnard'];
+const tagsFor = (text) => { const t = ['#IsleOfWight']; for (const town of TOWNS) if (new RegExp(`\\b${town}\\b`, 'i').test(text)) t.push('#' + town.replace(/ /g, '')); if (/council|councillor|planning/i.test(text)) t.push('#Council'); if (/ferry|wightlink|red funnel|hovertravel/i.test(text)) t.push('#Ferries'); if (/festival|gig|concert|music/i.test(text)) t.push('#Music'); if (/football|sailing|cricket|rugby|race|cowes week/i.test(text)) t.push('#Sport'); return [...new Set(t)].slice(0, 5); };
 const decode = (t) => (t || '').replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#8217;|&rsquo;/g, "'").replace(/&#8216;|&lsquo;/g, "'").replace(/&#8220;|&ldquo;|&#8221;|&rdquo;/g, '"').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&nbsp;/g, ' ').replace(/&#8230;|&hellip;/g, '...').replace(/\s+/g, ' ').trim();
 const tag = (x, n) => { const m = x.match(new RegExp(`<${n}[^>]*>([\\s\\S]*?)</${n}>`)); return m ? m[1] : ''; };
 let items = [];
@@ -35,8 +39,8 @@ let posted = 0;
 for (const it of items) {
   if (posted >= MAX) break;
   if (seen.has(it.link)) continue;
-  const content = `${it.title}\n\n${it.desc ? it.desc + (it.desc.length >= 220 ? '...' : '') + '\n\n' : ''}${it.source}: ${it.link}`;
-  const r = await fetch(`${BASE}/posts`, { method: 'POST', headers: { ...H, 'Content-Type': 'application/json' }, body: JSON.stringify({ content, community_id: COMMUNITY }) });
+  const content = `${it.title}\n\n${it.desc ? it.desc + (it.desc.length >= 220 ? '...' : '') + '\n\n' : ''}${it.source}: ${it.link}\n\n${tagsFor(it.title + ' ' + it.desc).join(' ')}`;
+  const r = await fetch(`${BASE}/posts`, { method: 'POST', headers: { ...H, 'Content-Type': 'application/json' }, body: JSON.stringify({ content, community_id: COMMUNITY, tag_names: tagsFor(it.title + ' ' + it.desc).map((t) => t.slice(1)) }) });
   if (r.ok) { posted++; console.log('posted', it.source, '|', it.title.slice(0, 60)); }
   else console.log('FAIL', r.status, (await r.text()).slice(0, 160));
 }

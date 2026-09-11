@@ -226,6 +226,8 @@ export default function UserProfileScreen() {
   // Cover photo: picked image goes through the 3:1 cropper, then uploads on Save.
   const [editBannerUri, setEditBannerUri] = React.useState<string | null>(null);
   const [cropBannerUri, setCropBannerUri] = React.useState<string | null>(null);
+  // Shown inside the editor: a toast sits under the modal on web.
+  const [editError, setEditError] = React.useState<string | null>(null);
   const editSession = React.useRef(0);
   const editSnapshot = React.useMemo(() => ({
     editName, editUsername, editBio, editAvatarUri, cropUri,
@@ -1191,6 +1193,9 @@ export default function UserProfileScreen() {
             >
               <Text variant="h3" style={{ marginBottom: spacing.xl }}>Edit Profile</Text>
 
+              {editError ? (
+                <Text variant="caption" color={colors.error} style={{ marginBottom: spacing.md }}>{editError}</Text>
+              ) : null}
               <Pressable
                 onPress={handlePickEditBanner}
                 accessibilityRole="button"
@@ -1293,6 +1298,7 @@ export default function UserProfileScreen() {
                       const submittedContext = editorContext;
                       const isCurrentContext = () => editorMounted.current && latestEditorContext.current === submittedContext;
                       setEditSaving(true);
+                      setEditError(null);
                       try {
                         if (editBannerUri) {
                           try {
@@ -1309,6 +1315,7 @@ export default function UserProfileScreen() {
                             await client.post('/uploads/banner-confirm', { key });
                             setEditBannerUri(null);
                           } catch {
+                            setEditError('Cover photo could not be uploaded. Use a JPG, PNG or WebP under 5 MB and try again.');
                             showToast('Cover photo could not be uploaded. Try again.', 'error');
                             return;
                           }
@@ -1330,6 +1337,7 @@ export default function UserProfileScreen() {
                             // Do not continue into profiles.update or close the
                             // editor: the selected crop is still present, so a
                             // second Save retries the complete upload.
+                            setEditError('Profile picture could not be uploaded. Use a JPG, PNG or WebP under 5 MB and try again.');
                             showToast('Profile picture could not be uploaded. Try again.', 'error');
                             return;
                           }

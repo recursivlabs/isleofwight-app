@@ -636,7 +636,17 @@ export function useForYouTop(limit = 5, enabled = true) {
           ? await fetchDeduped(`req:foryou-top:${limit}`, () => s.curator.forYou({ limit }))
           : await fetchDeduped(`req:foryou-top-fallback:${limit}`, () => s.posts.list({ limit, sort: 'score' }));
         if (cancelled) return;
-        const data = dedupePosts((res as any).data || []);
+        let data = dedupePosts((res as any).data || []);
+        if (data.length === 0) {
+          // A young app has no ranking signal; show its top posts, then newest.
+          const top: any = await fetchDeduped(`req:foryou-top-score:${limit}`, () => s.posts.list({ limit, sort: 'score' }));
+          data = dedupePosts(top?.data || []);
+          if (data.length === 0) {
+            const latest: any = await fetchDeduped(`req:foryou-top-latest:${limit}`, () => s.posts.list({ limit }));
+            data = dedupePosts(latest?.data || []);
+          }
+          if (cancelled) return;
+        }
         setPosts(data);
         setCache(cacheKey, data);
       } catch (err: any) {

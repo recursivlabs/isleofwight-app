@@ -159,7 +159,7 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
           <View style={{ position: 'absolute', bottom: 64, paddingHorizontal: spacing.xl }}>
             {tooSmall ? (
               <Text variant="caption" color="#ff6b6b" style={{ textAlign: 'center' }}>
-                This image is too small for a crisp {spec.label.toLowerCase()} (needs at least {spec.outWidth}×{spec.outHeight}).
+                This image is too small for a {spec.label.toLowerCase()}. Use one at least {Math.round(spec.outWidth * 0.4)} × {Math.round(spec.outHeight * 0.4)} pixels.
               </Text>
             ) : (
               <Text variant="caption" color="#aaa" style={{ textAlign: 'center' }}>Drag to reposition · pinch to zoom</Text>
