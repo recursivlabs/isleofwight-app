@@ -327,7 +327,7 @@ export default function CommunityDetailScreen() {
           </Text>
           <Text variant="body" color={colors.textSecondary} style={{ maxWidth: 300, textAlign: 'center' }}>
             {loadFailed
-              ? 'Minds could not reach this community. Check your connection and try again.'
+              ? 'Could not reach this community. Check your connection and try again.'
               : 'This community may have been removed or the link is incorrect.'}
           </Text>
           {loadFailed ? <Button onPress={retryCommunity} size="sm">Retry</Button> : null}

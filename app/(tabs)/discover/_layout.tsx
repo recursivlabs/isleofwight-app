@@ -136,7 +136,7 @@ export default function DiscoverLayout() {
   };
 
   const placeholder =
-    isLanding ? 'Search Minds'
+    isLanding ? 'Search Wight.social'
     : activeKey === 'people' ? 'Search creators…'
     : activeKey === 'communities' ? 'Search communities…'
     : 'Search posts…';

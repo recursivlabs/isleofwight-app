@@ -293,7 +293,7 @@ export function SignedOutDiscover({
               href: '/live',
               icon: 'radio-outline',
               title: 'Live',
-              description: 'Watch the live stream inside Minds',
+              description: 'Watch the live stream',
             },
             {
               href: '/moderation',

@@ -19,13 +19,13 @@ interface Props {
 // Built per-render so accent/accentMuted track the active theme.
 function badgeConfig(colors: ColorTokens): Record<BadgeType, { icon: string; color: string; label: string; bg: string }> {
   return {
-    gold: { icon: 'checkmark', color: colors.accent, label: 'Minds+', bg: colors.accentMuted },
+    gold: { icon: 'checkmark', color: colors.accent, label: 'Member', bg: colors.accentMuted },
     pro: { icon: 'diamond', color: colors.accent, label: 'Pro', bg: colors.accentMuted },
     founder: { icon: 'ribbon', color: colors.token, label: 'Founder', bg: colors.tokenMuted },
     verified: { icon: 'checkmark-circle', color: colors.verified, label: 'Verified', bg: colors.verifiedMuted },
     admin: { icon: 'shield', color: colors.accent, label: 'Admin', bg: colors.accentMuted },
     agent: { icon: 'sparkles', color: colors.accent, label: 'AI', bg: colors.accentMuted },
-    plus: { icon: 'checkmark', color: colors.accent, label: 'Minds+', bg: colors.accentMuted },
+    plus: { icon: 'checkmark', color: colors.accent, label: 'Member', bg: colors.accentMuted },
   };
 }
 

@@ -166,7 +166,7 @@ function personContext(u: any) {
   const bio = String(u?.bio || u?.description || u?.briefdescription || '').trim();
   if (bio) return bio;
   const f = profileFollowerCount(u);
-  return f > 0 ? `${formatCount(f)} followers` : 'New to Minds';
+  return f > 0 ? `${formatCount(f)} followers` : 'New here';
 }
 function groupContext(c: any) {
   const bio = communityDescription(c);
@@ -359,7 +359,7 @@ export function DiscoverLanding() {
 
       {topPosts.length > 0 && (
         <>
-          <SectionHeader title="Top on Minds today" onSeeAll={() => router.push('/(tabs)/discover/posts' as any)} />
+          <SectionHeader title="Top on the island today" onSeeAll={() => router.push('/(tabs)/discover/posts' as any)} />
           {topPosts.map((p: any) => (
             <Row key={`t-${p.id}`} kind="post" item={p} thumb={postThumb(p).url} avatar={p.author?.image || p.author?.avatar} name={p.author?.name || p.author?.username || 'Post'} handle={p.author?.username ? `@${p.author.username}` : undefined} context={`${(p.content || '').replace(/\n/g, ' ').slice(0, 70) || 'media'} · ${formatCount(postScore(p) || 0)} reactions`} onOpen={openPost} />
           ))}

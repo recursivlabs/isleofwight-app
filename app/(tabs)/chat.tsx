@@ -2301,7 +2301,7 @@ export function ConversationView({
           blob: note.recording.blob,
           contentType: note.recording.mime,
           sdk: prepared.sdkIdentity,
-          onError: () => showToast('Voice note upload failed. Keep Minds open and tap Send to retry.', 'error'),
+          onError: () => showToast('Voice note upload failed. Keep the app open and tap Send to retry.', 'error'),
         }) || undefined;
         if (!publicUrl) return false;
 
@@ -2356,7 +2356,7 @@ export function ConversationView({
         // this exact note instead of risking a duplicate POST.
         showToast(
           priorStatus === 'unknown'
-            ? 'Could not verify the earlier send. No duplicate was sent; keep Minds open and check again later.'
+            ? 'Could not verify the earlier send. No duplicate was sent; keep the app open and check again later.'
             : 'The earlier send is not visible, but may still finish. No duplicate was sent.',
           'error',
         );
@@ -2380,7 +2380,7 @@ export function ConversationView({
           ...current,
           deliveryAttemptedAt: undefined,
         }));
-        showToast('Voice note not sent. Keep Minds open and tap Send to retry.', 'error');
+        showToast('Voice note not sent. Keep the app open and tap Send to retry.', 'error');
         return false;
       }
 
@@ -2395,10 +2395,10 @@ export function ConversationView({
           return true;
         }
       }
-      showToast('Voice note outcome is unconfirmed. No duplicate was sent; keep Minds open and retry later.', 'error');
+      showToast('Voice note outcome is unconfirmed. No duplicate was sent; keep the app open and retry later.', 'error');
       return false;
     } catch {
-      showToast('Voice note not sent. Keep Minds open and tap Send to retry.', 'error');
+      showToast('Voice note not sent. Keep the app open and tap Send to retry.', 'error');
       return false;
     } finally {
       endChatVoiceAttempt(note, attemptToken);
@@ -2449,7 +2449,7 @@ export function ConversationView({
         const recording = await voice.stop();
         if (voiceOriginRef.current === origin) voiceOriginRef.current = null;
         if (recording && saveVoiceRecording(recording, origin)) {
-          showToast('Voice note kept in its original conversation while Minds stays open.', 'error');
+          showToast('Voice note kept in its original conversation while the app stays open.', 'error');
         }
       }
     } finally {
@@ -2476,7 +2476,7 @@ export function ConversationView({
     void voice.stop().then((recording) => {
       if (voiceOriginRef.current === origin) voiceOriginRef.current = null;
       if (recording && saveVoiceRecording(recording, origin)) {
-        showToast('Voice note kept in its original conversation while Minds stays open.', 'error');
+        showToast('Voice note kept in its original conversation while the app stays open.', 'error');
       }
     });
   }, [conversationId, saveVoiceRecording, sdk, user?.id, voice]);
@@ -2510,7 +2510,7 @@ export function ConversationView({
       const recording = await voice.stop();
       voiceOriginRef.current = null;
       if (recording && saveVoiceRecording(recording, origin)) {
-        showToast('Voice note kept in its original conversation while Minds stays open.', 'error');
+        showToast('Voice note kept in its original conversation while the app stays open.', 'error');
       }
       return;
     }

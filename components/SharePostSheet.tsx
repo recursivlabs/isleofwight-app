@@ -119,7 +119,7 @@ export function SharePostSheet({ visible, post, onClose }: { visible: boolean; p
   const sharePostExternally = React.useCallback(async () => {
     try {
       if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.share) {
-        await navigator.share({ title: post?.title || 'Post on Minds', url: postUrl });
+        await navigator.share({ title: post?.title || 'Post on Wight.social', url: postUrl });
       } else {
         await Share.share({ message: postUrl, url: postUrl });
       }

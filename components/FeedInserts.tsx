@@ -136,7 +136,7 @@ export function FeedPeopleInsert() {
     const bio = String(u?.bio || u?.description || u?.briefdescription || '').trim();
     if (bio) return bio;
     const f = profileFollowerCount(u);
-    return f > 0 ? `${formatCount(f)} followers` : 'New to Minds';
+    return f > 0 ? `${formatCount(f)} followers` : 'New here';
   };
 
   return (

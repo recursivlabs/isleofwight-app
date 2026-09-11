@@ -51,7 +51,7 @@ export function SharedPostCard({ postId }: { postId: string }) {
   }, [sdk, postId, post, retryCount]);
 
   const author = post?.author || post?.user || {};
-  const name = author.name || author.username || 'Minds post';
+  const name = author.name || author.username || 'Post';
   const text = String(post?.content || post?.body || post?.title || '').trim();
   const thumb = post ? postThumb(post).url : null;
 
