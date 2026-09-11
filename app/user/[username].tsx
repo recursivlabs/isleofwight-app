@@ -1198,7 +1198,7 @@ export default function UserProfileScreen() {
                 style={{ marginBottom: spacing.lg, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.surfaceHover, aspectRatio: 3, alignItems: 'center', justifyContent: 'center' }}
               >
                 {(editBannerUri || profile.banner || (profile as any).banner_url) ? (
-                  <Image source={{ uri: editBannerUri || profile.banner || (profile as any).banner_url }} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+                  <Image source={{ uri: editBannerUri || profile.banner || (profile as any).banner_url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                 ) : null}
                 <View style={{ position: 'absolute', bottom: spacing.sm, right: spacing.sm, flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 999, backgroundColor: 'rgba(0,0,0,0.55)' }}>
                   <Ionicons name="image-outline" size={14} color="#fff" />
