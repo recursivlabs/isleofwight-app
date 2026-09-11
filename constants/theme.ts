@@ -104,7 +104,7 @@ export const darkColors: ColorTokens = {
 
   border: 'rgba(255,255,255,0.12)',
   borderSubtle: 'rgba(255,255,255,0.08)',
-  borderFocus: '#ffd048',
+  borderFocus: '#1f5fa8',
 
   // Match legacy Minds: solid #f2f2f2 (grey-50), NOT dimmed white. The old
   // rgba(...,0.95) read grey over the near-black bg -- the exact "text is greyer
@@ -116,10 +116,10 @@ export const darkColors: ColorTokens = {
   textOnAccent: '#010100',
 
   // Legacy Minds gold (yellow-500 #ffd048), brighter than the old #d4a844.
-  accent: '#ffd048',
-  accentHover: '#ffda6b',
-  accentMuted: 'rgba(255,208,72,0.12)',
-  accentSubtle: 'rgba(255,208,72,0.06)',
+  accent: '#8ec5ff',
+  accentHover: '#a9d3ff',
+  accentMuted: 'rgba(142,197,255,0.12)',
+  accentSubtle: 'rgba(142,197,255,0.06)',
 
   success: '#34d399',
   successMuted: 'rgba(52,211,153,0.10)',
@@ -172,10 +172,10 @@ export const lightColors: ColorTokens = {
   // Minds DARK GOLD in light mode — the brand gold deepened so it reads gold,
   // not orange (the amber-600 before this leaned orange). Dark mode keeps the
   // brighter gold #ffd048. Primary actions layer a gold gradient on web.
-  accent: '#b8860b',
-  accentHover: '#9a7009',
-  accentMuted: 'rgba(184,134,11,0.14)',
-  accentSubtle: 'rgba(184,134,11,0.07)',
+  accent: '#1f5fa8',
+  accentHover: '#174b86',
+  accentMuted: 'rgba(31,95,168,0.14)',
+  accentSubtle: 'rgba(31,95,168,0.07)',
 
   success: '#047857',
   successMuted: 'rgba(4,120,87,0.10)',
@@ -216,12 +216,12 @@ export const colors: ColorTokens = { ...darkColors };
  * themes. Web gets the gradient + shadow; native falls back to the solid.
  */
 export const CTA = {
-  gradient: 'linear-gradient(180deg, #ffd84f 0%, #f0a81c 100%)',
-  gradientHover: 'linear-gradient(180deg, #ffe173 0%, #f7b52e 100%)',
-  solid: '#f4b41c',
-  ink: '#1a1206',
-  border: 'rgba(120,84,6,0.55)',
-  shadowWeb: '0 2px 10px rgba(224,150,20,0.38)',
+  gradient: 'linear-gradient(180deg, #3b7dd8 0%, #1f5fa8 100%)',
+  gradientHover: 'linear-gradient(180deg, #4f8ee2 0%, #2a6bb8 100%)',
+  solid: '#1f5fa8',
+  ink: '#ffffff',
+  border: 'rgba(12,44,84,0.55)',
+  shadowWeb: '0 2px 10px rgba(31,95,168,0.32)',
 } as const;
 
 export const spacing = {

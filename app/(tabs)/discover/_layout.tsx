@@ -40,7 +40,7 @@ type DiscoverEntityKey = Exclude<SignedOutDiscoverSection, 'landing'>;
 function activeKeyFromPath(pathname: string): DiscoverEntityKey {
   const m = pathname.match(/\/discover\/?([a-z]*)/i);
   const seg = m?.[1] || '';
-  if (seg === 'people' || seg === 'communities' || seg === 'agents') return seg;
+  if (seg === 'people' || seg === 'communities') return seg;
   return 'posts';
 }
 
@@ -139,7 +139,6 @@ export default function DiscoverLayout() {
     isLanding ? 'Search Minds'
     : activeKey === 'people' ? 'Search creators…'
     : activeKey === 'communities' ? 'Search communities…'
-    : activeKey === 'agents' ? 'Search agents…'
     : 'Search posts…';
 
   if (!user) {

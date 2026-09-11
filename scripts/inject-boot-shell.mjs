@@ -51,7 +51,7 @@ let html = readFileSync(file, 'utf8');
 // minds.com serves LEGACY Minds until the cutover — default to the domain the
 // new app answers on. At cutover set EXPO_PUBLIC_SITE_URL=https://www.minds.com.
 const SITE_ORIGIN = (process.env.EXPO_PUBLIC_SITE_URL || 'https://isleofwight.on.minds.io').replace(/\/+$/, '');
-const META_TITLE = 'Isle of Wight';
+const META_TITLE = 'Isle of Wight Social';
 // Em dashes are allowed in the TITLE only, never in descriptions (brand rule).
 const META_DESCRIPTION = 'Local news, events, groups and chat for the Isle of Wight.';
 const META_BLOCK = `<!--minds-meta-->
@@ -59,7 +59,7 @@ const META_BLOCK = `<!--minds-meta-->
     <meta name="description" content="${META_DESCRIPTION}" />
     <link rel="canonical" href="${SITE_ORIGIN}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Isle of Wight" />
+    <meta property="og:site_name" content="Isle of Wight Social" />
     <meta property="og:title" content="${META_TITLE}" />
     <meta property="og:description" content="${META_DESCRIPTION}" />
     <meta property="og:url" content="${SITE_ORIGIN}" />

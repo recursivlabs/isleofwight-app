@@ -681,12 +681,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {}
 
-    // Greet the new user: ensure their "Minds AI" personal agent + welcome DM.
-    // Fire-and-forget — onboarding must never block or fail sign-up.
-    void bootstrapMindsAI(createAuthedSdk(result.apiKey), {
-      id: result.user?.id,
-      name: result.user?.name || name,
-    });
   }, []);
 
   const signIn = React.useCallback(async (email: string, password: string) => {
@@ -708,10 +702,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Returning users (incl. pre-imported die-hards logging in for the first
     // time on 2.0) also get their Minds AI + welcome DM. Idempotent, so it
     // no-ops for anyone who has already been greeted. Fire-and-forget.
-    void bootstrapMindsAI(createAuthedSdk(result.apiKey), {
-      id: result.user?.id,
-      name: result.user?.name,
-    });
   }, []);
 
   // State setters, router, cache invalidators, and storage helpers are stable

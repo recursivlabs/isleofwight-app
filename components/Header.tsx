@@ -122,7 +122,7 @@ export function Header({ showBack, title }: Props) {
           <Pressable
             hitSlop={10}
             accessibilityRole="link"
-            accessibilityLabel="Isle of Wight home"
+            accessibilityLabel="Isle of Wight Social home"
             onPress={() => {
               const onHome = pathname === '/' || pathname === '' || pathname === '/index';
               if (onHome) emitHomeScrollToTop();
@@ -133,9 +133,9 @@ export function Header({ showBack, title }: Props) {
               source={isDark ? LOGO_DARK : LOGO_LIGHT}
               // Same height as the sm avatar beside it (32px) — reads as one row.
               // Legacy Minds lockup is 2.6:1 (bulb + lowercase wordmark), so 32 tall = 83 wide.
-              style={{ width: 83, height: 32 }}
+              style={{ width: 140, height: 34 }}
               contentFit="contain"
-              accessibilityLabel="Isle of Wight, go home"
+              accessibilityLabel="Isle of Wight Social, go home"
             />
           </Pressable>
         </View>

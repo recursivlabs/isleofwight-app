@@ -311,32 +311,6 @@ export default function NotificationsScreen() {
       <RightRailLayout context="notifications">
       {/* Root tab — no back chevron (X shows a plain title on tab roots). */}
       <ScreenHeader title="Notifications" showBack={false} />
-      <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.sm }}>
-        {([['social', 'Social'], ['system', 'Builds']] as const).map(([key, label]) => {
-          const active = category === key;
-          return (
-            <Pressable
-              key={key}
-              onPress={() => setCategory(key)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: active }}
-              style={({ pressed }) => ({
-                paddingVertical: spacing.xs + 2,
-                paddingHorizontal: spacing.md,
-                borderRadius: 999,
-                borderWidth: 1,
-                borderColor: active ? colors.accent : colors.border,
-                backgroundColor: active ? colors.accentSubtle : 'transparent',
-                opacity: pressed ? 0.7 : 1,
-                ...(Platform.OS === 'web' ? { cursor: 'pointer' } as any : {}),
-              })}
-            >
-              <Text variant="caption" color={active ? colors.accent : colors.textSecondary}>{label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
       {loading ? (
         <View style={{ padding: spacing.xl, gap: spacing.lg }}>
           {[1, 2, 3, 4, 5].map(i => (

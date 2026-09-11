@@ -59,7 +59,7 @@ export function renderMarkdownToHtml(
     .replace(/`([^`]+)`/g, (_m, code) => stash(`<code${sty('background:#1a1a1e;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px;color:#a0a0a8')}>${code}</code>`))
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) => (
       isSafeUrl(url)
-        ? stash(`<a href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" style="color:#d4a844;text-decoration:underline">${label}</a>`)
+        ? stash(`<a href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" style="color:#1f5fa8;text-decoration:underline">${label}</a>`)
         : m
     ))
     .replace(/\bhttps?:\/\/[^\s<>"'`{}|\\^]+/g, (m) => {
@@ -69,12 +69,12 @@ export function renderMarkdownToHtml(
       const url = trimUrlEnd(m);
       if (isLikelyTruncatedUrl(url)) return m;
       const trailing = m.slice(url.length);
-      return `${stash(`<a href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" style="color:#d4a844;text-decoration:underline">${url}</a>`)}${trailing}`;
+      return `${stash(`<a href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" style="color:#1f5fa8;text-decoration:underline">${url}</a>`)}${trailing}`;
     })
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/(^|\s)#([a-zA-Z0-9_]+)/g, (_m, lead, tag) => `${lead}${stash(`<a href="/discover/posts?q=%23${tag}" style="color:#d4a844;text-decoration:none">#${tag}</a>`)}`)
-    .replace(/(^|\s)@([a-zA-Z0-9_]+)/g, (_m, lead, name) => `${lead}${stash(`<a href="/${name}" style="color:#d4a844;text-decoration:none">@${name}</a>`)}`);
+    .replace(/(^|\s)#([a-zA-Z0-9_]+)/g, (_m, lead, tag) => `${lead}${stash(`<a href="/discover/posts?q=%23${tag}" style="color:#1f5fa8;text-decoration:none">#${tag}</a>`)}`)
+    .replace(/(^|\s)@([a-zA-Z0-9_]+)/g, (_m, lead, name) => `${lead}${stash(`<a href="/${name}" style="color:#1f5fa8;text-decoration:none">@${name}</a>`)}`);
 
   // 3. Block pass: walk lines so bullet/numbered lists and headings render as
   //    real <ul>/<ol>/<h*> instead of leaking raw "-", "*", "#" markers.
@@ -236,7 +236,7 @@ function getPurifier(): any {
     if (node.tagName === 'A') {
       node.setAttribute('target', '_blank');
       node.setAttribute('rel', 'noopener noreferrer');
-      node.setAttribute('style', 'color:#d4a844;text-decoration:underline');
+      node.setAttribute('style', 'color:#1f5fa8;text-decoration:underline');
     }
     if (node.tagName === 'IMG') {
       node.setAttribute('loading', 'lazy');
@@ -244,7 +244,7 @@ function getPurifier(): any {
     }
     if (node.tagName === 'P') node.setAttribute('style', 'margin:8px 0');
     if (node.tagName === 'BLOCKQUOTE') {
-      node.setAttribute('style', 'border-left:3px solid #d4a844;margin:8px 0;padding-left:12px;opacity:.9');
+      node.setAttribute('style', 'border-left:3px solid #1f5fa8;margin:8px 0;padding-left:12px;opacity:.9');
     }
   });
   purifier = instance;

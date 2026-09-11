@@ -18,6 +18,7 @@ import { usePageTitle } from '../../lib/usePageTitle';
 import { communityDescription } from '../../lib/models';
 import { ProfileBioToggle } from '../../components/ProfileBioToggle';
 import { canRunGroup, groupAdmin } from '../../lib/groupAdmin';
+import { chatConversationHref } from '../../lib/chatNavigation';
 
 // Roughly three lines of body text at the group page's measure.
 const DESCRIPTION_FOLD_CHARS = 180;
@@ -34,7 +35,7 @@ export default function CommunityDetailScreen() {
   const cachedCommunity = getCached(`community:${id}`);
   const cachedPosts = getCached(`community-posts:${id}`);
   const [community, setCommunity] = React.useState<any>(cachedCommunity || null);
-  usePageTitle(community?.name ? `${community.name} — Isle of Wight` : null);
+  usePageTitle(community?.name ? `${community.name} — Isle of Wight Social` : null);
   const [posts, setPosts] = React.useState<any[]>(cachedPosts || []);
   const [loading, setLoading] = React.useState(!cachedCommunity);
   const [communityLoadError, setCommunityLoadError] = React.useState<'not_found' | 'temporary' | null>(null);
@@ -438,6 +439,25 @@ export default function CommunityDetailScreen() {
                   {isMember ? (leaveHover ? 'Leave' : 'Joined') : 'Join'}
                 </Button>
               </View>
+              {isMember && user ? (
+                <Button
+                  onPress={async () => {
+                    if (!sdk) return;
+                    try {
+                      const res: any = await sdk.chat.communityConversation(community.id);
+                      const convId = res?.data?.id || res?.id;
+                      if (!convId) throw new Error('no room');
+                      router.push(chatConversationHref(convId) as any);
+                    } catch {
+                      showToast('Chat is not ready for this group yet', 'error');
+                    }
+                  }}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Chat
+                </Button>
+              ) : null}
               <Button
                 onPress={() => user
                   ? router.push({ pathname: '/(tabs)/create', params: { communityId: community.id, communityName: community.name } } as any)

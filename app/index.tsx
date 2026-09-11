@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { useAuth } from '../lib/auth';
 
-const LOGO_DARK = require('../assets/logo-dark-mode.svg');
+const LOGO_DARK = require('../assets/logo-light-mode.svg');
 // The same file expo-splash-screen draws, so the boot hold below is the splash.
 const SPLASH_MARK = require('../assets/splash.png');
 import { BASE_URL, SITE_URL } from '../lib/recursiv';
@@ -16,7 +16,8 @@ import { LinkPressable } from '../components/LinkPressable';
 // sky unconditionally, so its text and accents have to come from the dark
 // palette unconditionally too — otherwise a phone set to Light renders
 // light-theme foreground colours on a dark background, which is unreadable.
-import { darkColors as colors, spacing, SPLASH_BG } from '../constants/theme';
+import { lightColors as colors, spacing } from '../constants/theme';
+const SPLASH_BG = '#ffffff';
 import { useTheme, useInputKeyboardProps } from '../lib/theme';
 import { rootPostAuthDestination } from '../lib/authRedirect';
 import { passwordResetRedirectUrl } from '../lib/passwordResetUrl';
@@ -229,7 +230,7 @@ function AuthPolicyLinks() {
   );
   return (
     <View
-      accessibilityLabel="Isle of Wight policies"
+      accessibilityLabel="Isle of Wight Social policies"
       style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: spacing.xl, maxWidth: 360 }}
     >
       <Text variant="caption" color={colors.textMuted}>By signing in you agree to the</Text>
@@ -387,7 +388,7 @@ export default function LandingScreen() {
   if (isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: '#08080a', alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Isle of Wight" />
+        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Isle of Wight Social" />
       </View>
     );
   }
@@ -564,13 +565,13 @@ export default function LandingScreen() {
     buttonBg: colors.accent,
     buttonText: colors.textInverse,
     ghostText: colors.text,
-    inputBg: 'rgba(255,255,255,0.06)',
-    inputBorder: 'rgba(255,255,255,0.12)',
+    inputBg: '#f4f4f5',
+    inputBorder: '#e4e4e7',
     inputBorderFocus: colors.accent,
-    inputText: '#fafafa',
-    inputPlaceholder: 'rgba(255,255,255,0.3)',
+    inputText: '#111111',
+    inputPlaceholder: '#9ca3af',
     successText: colors.text,
-    subtleText: 'rgba(255,255,255,0.4)',
+    subtleText: '#6b7280',
   };
 
   const inputStyle = {
@@ -1139,29 +1140,6 @@ export default function LandingScreen() {
           </Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => { setScreen('login'); resetAuthError(); }}
-          accessibilityRole="button"
-          accessibilityLabel="Use password instead"
-          style={{ alignItems: 'center' as const, paddingVertical: spacing.xs }}
-        >
-          <Text variant="caption" color={c.ghostText} style={{ opacity: 0.5 }}>
-            Use password instead
-          </Text>
-        </Pressable>
-
-        <Pressable
-          {...(Platform.OS === 'web'
-            ? { href: '/discover' }
-            : { onPress: () => router.push('/discover') }) as any}
-          accessibilityRole="link"
-          accessibilityLabel="Explore without signing in"
-          style={({ pressed }) => ({ alignItems: 'center' as const, marginTop: spacing.sm, opacity: pressed ? 0.65 : 1, ...(Platform.OS === 'web' ? { cursor: 'pointer' } as any : {}) })}
-        >
-          <Text variant="caption" color={c.subtleText} align="center" style={{ opacity: 0.7 }}>
-            Want to look around first? <Text variant="caption" color={c.wordmark}>Explore the network</Text>
-          </Text>
-        </Pressable>
       </View>
     );
   };
@@ -1175,10 +1153,6 @@ export default function LandingScreen() {
         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: SPLASH_BG,
       }}>
-        <Starfield />
-        <ShootingStarField />
-        <UfoField />
-        <DarkGlow />
       </View>
 
       {/* Content — KeyboardAvoidingView shifts the form above the
@@ -1220,38 +1194,21 @@ export default function LandingScreen() {
           <Image
             source={LOGO_DARK}
             style={{
-              width: isMobile ? 259 : 356,
-              height: isMobile ? 80 : 110,
+              width: isMobile ? 260 : 340,
+              height: isMobile ? 62 : 81,
               marginBottom: isMobile ? spacing.lg : spacing['3xl'],
             }}
             contentFit="contain"
-            accessibilityLabel="Isle of Wight"
+            accessibilityLabel="Isle of Wight Social"
             onLoad={revealHero}
             onError={revealHero}
           />
 
-          <Text
-            variant="body"
-            color={c.tagline}
-            align="center"
-            accessibilityRole="header"
-            aria-level={1}
-            style={{
-              fontSize: 18,
-              letterSpacing: 8,
-              fontWeight: '200',
-              textTransform: 'lowercase',
-              opacity: c.taglineOpacity,
-              marginTop: spacing.md,
-            }}
-          >
-            island news, groups and chat
-          </Text>
 
         </View>
 
         {renderForm()}
-        <AuthPolicyLinks />
+        {screen === 'otp' ? <AuthPolicyLinks /> : null}
       </Animated.View>
         );
         return Platform.OS === 'web' ? body : (

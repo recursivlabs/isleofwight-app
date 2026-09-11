@@ -446,9 +446,7 @@ const CATS: { key: CatKey; label: string; icon: React.ComponentProps<typeof Ioni
   { key: 'notifications', label: 'Notifications', icon: 'notifications-outline' },
   { key: 'appearance', label: 'Appearance', icon: 'color-palette-outline' },
   { key: 'feed', label: 'Feed & content', icon: 'newspaper-outline' },
-  { key: 'ai', label: 'AI agent', icon: 'sparkles-outline' },
   { key: 'data', label: 'Your data', icon: 'download-outline' },
-  { key: 'help', label: 'Help & feedback', icon: 'help-buoy-outline' },
   { key: 'about', label: 'About', icon: 'information-circle-outline' },
 ];
 
@@ -944,7 +942,7 @@ export default function SettingsScreen() {
 
   const versionFooter = (
     <View style={{ alignItems: 'center', gap: 2, paddingTop: spacing.xl }}>
-      <Text variant="bodyMedium" color={colors.textSecondary}>Isle of Wight</Text>
+      <Text variant="bodyMedium" color={colors.textSecondary}>Isle of Wight Social</Text>
       <Text variant="caption" color={colors.textMuted}>Built on Recursiv · Powered by open source</Text>
       {/* Real native version + the OTA update actually RUNNING on this
           device. The short update id is the ground truth for "did my phone
@@ -1398,7 +1396,7 @@ export default function SettingsScreen() {
         return (
           <>
             <Section>
-              <SettingRow first icon="document-text-outline" label="Terms of Service" onPress={() => Linking.openURL('https://minds.com/p/terms')} />
+              <SettingRow first icon="document-text-outline" label="Terms of Service" onPress={() => showMsg('Coming soon')} />
               {/* Two privacy entries, deliberately, until a human retires one.
                   The legacy link is the OPERATIVE policy and stays: it is what
                   users have been served and swapping it for an unreviewed
@@ -1409,14 +1407,14 @@ export default function SettingsScreen() {
                   covers them. The legacy page returns 200 while serving the
                   legacy network and never naming PostHog, so it satisfies a
                   status-code check and not the requirement. */}
-              <SettingRow icon="lock-closed-outline" label="Privacy Policy" onPress={() => Linking.openURL('https://minds.com/p/privacy')} />
-              <SettingRow icon="shield-checkmark-outline" label="How this app uses your data" sublabel="What this app collects, and what leaves it" onPress={() => router.push('/privacy' as any)} />
-              <SettingRow icon="people-circle-outline" label="Community Guidelines" onPress={() => Linking.openURL('https://minds.com/p/community-guidelines')} />
+              <SettingRow icon="lock-closed-outline" label="Privacy Policy" onPress={() => showMsg('Coming soon')} />
+              <SettingRow icon="shield-checkmark-outline" label="How this app uses your data" sublabel="What this app collects, and what leaves it" onPress={() => showMsg('Coming soon')} />
+              <SettingRow icon="people-circle-outline" label="Community Guidelines" onPress={() => showMsg('Coming soon')} />
               <SettingRow
                 icon="shield-outline"
                 label="Moderation decisions & appeals"
                 sublabel="See our principles, public action log, and decisions affecting you"
-                onPress={() => router.push('/moderation' as any)}
+                onPress={() => showMsg('Coming soon')}
               />
             </Section>
             {versionFooter}

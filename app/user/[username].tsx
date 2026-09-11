@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ActivityIndicator } from 'react-native';
 import { Text, Avatar, Button, PostCard, Skeleton, RightRailLayout, AgentBadge, FeedSidebar } from '../../components';
-import { ImageCropper, CROP_AVATAR } from '../../components/ImageCropper';
+import { ImageCropper, CROP_AVATAR, CROP_BANNER } from '../../components/ImageCropper';
 import { Badge, getBadges } from '../../components/Badge';
 import { Container } from '../../components/Container';
 import { ScreenHeader } from '../../components/ScreenHeader';
@@ -83,7 +83,7 @@ export default function UserProfileScreen() {
   const { profile, loading, error, isFollowing, setIsFollowing, refresh: refreshProfile } = useProfile(username);
   usePageTitle(
     profile
-      ? `${profile.name || profile.username || username} (@${profile.username || username}) — Isle of Wight`
+      ? `${profile.name || profile.username || username} (@${profile.username || username}) — Isle of Wight Social`
       : null,
   );
   const { refresh: refreshMyProfile } = useMyProfile();
@@ -223,6 +223,9 @@ export default function UserProfileScreen() {
   const [editAvatarUri, setEditAvatarUri] = React.useState<string | null>(null);
   // Uri handed to the ImageCropper; its onDone sets editAvatarUri to the crop.
   const [cropUri, setCropUri] = React.useState<string | null>(null);
+  // Cover photo: picked image goes through the 3:1 cropper, then uploads on Save.
+  const [editBannerUri, setEditBannerUri] = React.useState<string | null>(null);
+  const [cropBannerUri, setCropBannerUri] = React.useState<string | null>(null);
   const editSession = React.useRef(0);
   const editSnapshot = React.useMemo(() => ({
     editName, editUsername, editBio, editAvatarUri, cropUri,
@@ -542,6 +545,28 @@ export default function UserProfileScreen() {
   // Pick the FULL image (no OS crop) and route it through our own ImageCropper —
   // the OS `allowsEditing` crop was inconsistent across iOS/Android and absent on
   // web. Our cropper guarantees a spec-perfect result on every platform.
+  const handlePickEditBanner = async () => {
+    try {
+      const picker = getImagePicker();
+      if (picker) {
+        const result = await picker.launchImageLibraryAsync({ mediaTypes: picker.MediaTypeOptions.Images, quality: 1 });
+        if (!result.canceled && result.assets[0]) setCropBannerUri(result.assets[0].uri);
+      } else if (Platform.OS === 'web') {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (e: any) => {
+          const file = e.target?.files?.[0];
+          if (file) setCropBannerUri(URL.createObjectURL(file));
+        };
+        input.click();
+      }
+    } catch (error) {
+      captureException(error, { action: 'edit-profile', step: 'pick-banner' });
+      showToast('Could not open your photo library. Try again.', 'error');
+    }
+  };
+
   const handlePickEditAvatar = async () => {
     try {
       const picker = getImagePicker();
@@ -1167,6 +1192,21 @@ export default function UserProfileScreen() {
               <Text variant="h3" style={{ marginBottom: spacing.xl }}>Edit Profile</Text>
 
               <Pressable
+                onPress={handlePickEditBanner}
+                accessibilityRole="button"
+                accessibilityLabel="Change cover photo"
+                style={{ marginBottom: spacing.lg, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.surfaceHover, aspectRatio: 3, alignItems: 'center', justifyContent: 'center' }}
+              >
+                {(editBannerUri || profile.banner || (profile as any).banner_url) ? (
+                  <Image source={{ uri: editBannerUri || profile.banner || (profile as any).banner_url }} style={{ width: '100%', height: '100%' }} contentFit="cover" />
+                ) : null}
+                <View style={{ position: 'absolute', bottom: spacing.sm, right: spacing.sm, flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 999, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+                  <Ionicons name="image-outline" size={14} color="#fff" />
+                  <Text variant="caption" color="#fff">Cover photo</Text>
+                </View>
+              </Pressable>
+
+              <Pressable
                 onPress={handlePickEditAvatar}
                 accessibilityRole="button"
                 accessibilityLabel="Change profile picture"
@@ -1254,6 +1294,25 @@ export default function UserProfileScreen() {
                       const isCurrentContext = () => editorMounted.current && latestEditorContext.current === submittedContext;
                       setEditSaving(true);
                       try {
+                        if (editBannerUri) {
+                          try {
+                            const blobRes = await fetch(editBannerUri);
+                            const blob = await blobRes.blob();
+                            const contentType = blob.type || 'image/jpeg';
+                            const client = (sdk as any).uploads?.client || (sdk as any).client;
+                            const urlRes = await client.post('/uploads/banner-url', { content_type: contentType, content_length: blob.size });
+                            const uploadUrl = urlRes?.data?.upload_url || urlRes?.data?.url;
+                            const key = urlRes?.data?.key;
+                            if (!uploadUrl || !key) throw new Error('Incomplete cover upload response');
+                            const putRes = await fetch(uploadUrl, { method: 'PUT', body: blob, headers: { 'Content-Type': contentType } });
+                            if (!putRes.ok) throw new Error(`Upload failed: ${putRes.status} ${putRes.statusText}`);
+                            await client.post('/uploads/banner-confirm', { key });
+                            setEditBannerUri(null);
+                          } catch {
+                            showToast('Cover photo could not be uploaded. Try again.', 'error');
+                            return;
+                          }
+                        }
                         if (editAvatarUri) {
                           try {
                             const blobRes = await fetch(editAvatarUri);
@@ -1337,6 +1396,12 @@ export default function UserProfileScreen() {
         spec={CROP_AVATAR}
         onCancel={() => setCropUri(null)}
         onDone={(r) => { setEditAvatarUri(r.uri); setCropUri(null); }}
+      />
+      <ImageCropper
+        uri={cropBannerUri}
+        spec={CROP_BANNER}
+        onCancel={() => setCropBannerUri(null)}
+        onDone={(r) => { setEditBannerUri(r.uri); setCropBannerUri(null); }}
       />
     </Container>
   );

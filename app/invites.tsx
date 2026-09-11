@@ -81,7 +81,7 @@ export default function InvitesScreen() {
         setTimeout(() => setCopied(null), 2000);
       } else {
         await Share.share({
-          title: 'Join me on Isle of Wight',
+          title: 'Join me on Isle of Wight Social',
           message: `Join me on Minds: ${link}`,
           url: link,
         });

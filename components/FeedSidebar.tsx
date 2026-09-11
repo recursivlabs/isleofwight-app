@@ -587,7 +587,7 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
         ))}
       </SidebarSection>
     ) : null,
-    agents: visibleAgents.length > 0 ? (
+    agents: false && visibleAgents.length > 0 ? (
       <SidebarSection
         title="Trending Agents"
         icon="hardware-chip-outline"

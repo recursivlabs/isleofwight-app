@@ -586,7 +586,7 @@ export default function FeedScreen() {
           renderItem={renderRow}
           ListHeaderComponent={
             <>
-              {activeTab === 'foryou' && agentCtaState === 'show' && (
+              {false && activeTab === 'foryou' && agentCtaState === 'show' && (
                 <Pressable
                   onPress={() => router.push('/agent' as any)}
                   style={({ pressed }) => ({

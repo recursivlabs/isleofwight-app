@@ -203,7 +203,7 @@ export default function ManageCommunityScreen() {
         await navigator.clipboard.writeText(link);
         showToast('Invite link copied');
       } else {
-        await Share.share({ title: `Join ${community.name} on Isle of Wight`, message: `Join ${community.name} on Isle of Wight: ${link}`, url: link });
+        await Share.share({ title: `Join ${community.name} on Isle of Wight Social`, message: `Join ${community.name} on Isle of Wight Social: ${link}`, url: link });
       }
     } catch (e: any) {
       showToast(e?.message || 'Could not make an invite link', 'error');

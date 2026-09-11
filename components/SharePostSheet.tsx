@@ -281,9 +281,7 @@ export function SharePostSheet({ visible, post, onClose }: { visible: boolean; p
                 data={query.trim() ? people : recentDms}
                 keyExtractor={(item: any, i) => String(item.id ?? i)}
                 keyboardShouldPersistTaps="always"
-                ListHeaderComponent={!query.trim() ? (
-                  <Row id="ai" name="Minds AI" ai subtitle="Get context about this post — your default" onPress={sendToAi} />
-                ) : null}
+                ListHeaderComponent={null}
                 ListEmptyComponent={searchEmpty}
                 renderItem={({ item }: any) => (
                   <Row id={item.id} name={item.name || item.username || 'Unknown'} avatar={item.image || item.avatar}

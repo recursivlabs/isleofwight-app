@@ -224,7 +224,7 @@ export function NewChatModal({ visible, onClose }: { visible: boolean; onClose: 
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, backgroundColor: colors.surface, borderWidth: 0.5, borderColor: colors.glassBorder, borderRadius: radius.md, paddingHorizontal: spacing.md }}>
               <Ionicons name="search" size={16} color={colors.textMuted} />
               <TextInput
-                placeholder="Search people or agents…"
+                placeholder="Search people…"
                 placeholderTextColor={colors.textMuted}
                 value={query}
                 onChangeText={setQuery}
@@ -321,7 +321,7 @@ export function NewChatModal({ visible, onClose }: { visible: boolean; onClose: 
             {showEmpty && (
               <View style={{ alignItems: 'center', paddingVertical: spacing['2xl'], gap: spacing.sm }}>
                 <Ionicons name="search-outline" size={28} color={colors.textMuted} />
-                <Text variant="caption" color={colors.textMuted}>No people or agents match “{query.trim()}”.</Text>
+                <Text variant="caption" color={colors.textMuted}>No people match “{query.trim()}”.</Text>
               </View>
             )}
             <View style={{ height: spacing.md }} />

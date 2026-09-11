@@ -1,0 +1,17 @@
+name: Island news
+# Posts the newest island news stories into the Local News group.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/island-news.mjs 4
+        env:
+          IOW_NEWS_KEY: ${{ secrets.IOW_NEWS_KEY }}

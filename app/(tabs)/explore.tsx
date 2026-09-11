@@ -8,7 +8,6 @@ const TAB_ROUTES: Record<string, string> = {
   posts: '/(tabs)/discover/posts',
   people: '/(tabs)/discover/people',
   communities: '/(tabs)/discover/communities',
-  agents: '/(tabs)/discover/agents',
 };
 
 export default function Explore() {

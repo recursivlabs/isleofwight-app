@@ -63,7 +63,7 @@ const ANDROID_CERT_FINGERPRINTS = configuredAndroidFingerprints.length
   ? [...new Set(configuredAndroidFingerprints)]
   : [DEFAULT_ANDROID_CERT_FINGERPRINT];
 
-const SITE_NAME = 'Isle of Wight';
+const SITE_NAME = 'Isle of Wight Social';
 const DEFAULT_TITLE = 'Isle of Wight';
 // Em dashes are allowed in the TITLE only, never in descriptions (brand rule).
 const DEFAULT_DESCRIPTION = 'Local news, events, groups and chat for the Isle of Wight.';

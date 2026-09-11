@@ -397,7 +397,7 @@ export function CommandPalette() {
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
                 ref={inputRef}
-                placeholder="Search creators, communities, agents…"
+                placeholder="Search people, groups, posts…"
                 placeholderTextColor={colors.textMuted}
                 value={query}
                 onChangeText={setQuery}

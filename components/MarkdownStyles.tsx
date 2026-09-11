@@ -6,7 +6,7 @@ import { useColors } from '../lib/theme';
  *
  * WHAT THIS REPLACES
  * `renderMarkdownToHtml` bakes literal hex values into every tag it emits:
- * `#1a1a1e` behind code and pre, `#a0a0a8` for their text, `#d4a844` for links.
+ * `#1a1a1e` behind code and pre, `#a0a0a8` for their text, `#1f5fa8` for links.
  * Those were chosen for the dark theme and never change, so in light mode a post
  * containing code renders a near-black slab, and every link is the dark-theme
  * gold rather than the accent the rest of the page uses.
@@ -14,7 +14,7 @@ import { useColors } from '../lib/theme';
  * ChatBubble had already noticed and was string-replacing those hexes out of the
  * generated HTML at render time:
  *
- *     .replace(/color:#d4a844/g, `color:${linkColor}`)
+ *     .replace(/color:#1f5fa8/g, `color:${linkColor}`)
  *
  * which only works while nobody changes the renderer's palette, and does nothing
  * about the backgrounds. Feed cards did not even do that.

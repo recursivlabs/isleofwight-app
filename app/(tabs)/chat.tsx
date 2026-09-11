@@ -594,7 +594,7 @@ function AuthenticatedChatScreen() {
           <Text variant="body" color={colors.textSecondary} style={{ textAlign: 'center', maxWidth: 300, lineHeight: 24 }}>
             {inboxView === 'requests'
               ? 'Messages from people you do not follow will appear here.'
-              : 'Start a conversation with someone or chat with an agent.'}
+              : 'Start a conversation with someone on the island.'}
           </Text>
           {inboxView === 'primary' ? (
             <>

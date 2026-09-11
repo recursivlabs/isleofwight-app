@@ -86,7 +86,7 @@ export function SignedOutDiscover({
   const heading = isCommunityDirectory ? 'Discover public groups' : 'Discover what’s happening';
   const description = isCommunityDirectory
     ? 'Explore a public group now. Sign in to search, join, and create groups across the island.'
-    : 'Explore active public groups now. Sign in to search, follow, post, and discover people and agents.';
+    : 'Explore active public groups now. Sign in to search, follow, post, and discover people.';
   const openAuth = (auth: 'otp' | 'login') => {
     router.push(signInPath(auth, returnTo) as any);
   };
