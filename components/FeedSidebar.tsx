@@ -231,7 +231,9 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
   // The edition already groups REAL posts under an editorial headline, and it
   // regenerates daily, so it is the better source for a rail whose whole job is
   // to say people are here and something is happening now.
-  const { edition: todayEdition } = useTodayEdition();
+  // The daily edition is scoped to the whole network on the server, so it
+  // would show another app's posts here. Off until the server scopes it.
+  const todayEdition: any = null;
   // Creators → the server-ranked FOLLOWER leaderboard (real reach, the People
   // tab's authoritative top-N), hydrated with directory identity and filtered of
   // AI/bot accounts. The old post-count sort let simulator/parody accounts win.
@@ -411,7 +413,7 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
       if (stories.length === 0) return null;
       return (
         <SidebarSection
-          title="Today on Minds"
+          title="Today on the island"
           icon="flame-outline"
           onSeeAll={() => router.push('/(tabs)/discover' as any)}
         >

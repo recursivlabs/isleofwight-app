@@ -25,6 +25,9 @@ const OPERATOR_TARGET_PREFIX =
 export function isSocialNotif(n: any): boolean {
   const t = String(n?.target_type ?? n?.targetType ?? '').toLowerCase();
   if (OPERATOR_TARGET_PREFIX.test(t)) return false;
+  // Chat is its own surface: the Messages tab counts unread conversations.
+  // A message must not also raise a notification here or in the badge.
+  if (/^(chat|message|conversation|dm)/.test(t)) return false;
   // The dispatcher writes "Working on: …" titles for agent activity.
   if (/^working on:/i.test(String(n?.title ?? ''))) return false;
   return true;

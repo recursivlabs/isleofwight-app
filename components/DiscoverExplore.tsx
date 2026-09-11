@@ -306,8 +306,12 @@ export function DiscoverLanding() {
   const router = useRouter();
   const colors = useColors();
   const conn = useConnectState();
-  const { tags } = useTags(16);
-  const { edition } = useTodayEdition();
+  const { tags: allTags } = useTags(16);
+  // Tag names are network-wide on the server; only counts are scoped to this
+  // app. Keep the tags this app has actually used.
+  const tags = React.useMemo(() => (allTags || []).filter((t: any) => ((t?.post_count ?? t?.postCount ?? t?.count ?? 0) > 0)), [allTags]);
+  // Network-wide on the server; off until it is scoped to this app.
+  const edition: any = null;
   const { posts: topFeed } = useForYouTop(12);
   const { profiles } = useProfiles(120);
   const { entries: board } = useProfileLeaderboard(60, 'engagement');
@@ -327,7 +331,7 @@ export function DiscoverLanding() {
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 48 }}>
       {!!edition?.stories?.length && (
         <>
-          <SectionHeader title="Today on Minds" />
+          <SectionHeader title="Today on the island" />
           {edition.stories.slice(0, 5).map((s: any, i: number) => (
             <TodayStory key={s.id || `story-${i}`} story={s} onOpenPost={openPost} />
           ))}
