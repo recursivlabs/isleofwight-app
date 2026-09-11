@@ -1,0 +1,51 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "ignore": [
+      "dist/**",
+      "node_modules/**",
+      ".expo/**",
+      "test/stubs/**",
+      "scripts/**",
+      "*.config.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": false
+  },
+  "organizeImports": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "warn",
+        "noImplicitAnyLet": "warn",
+        "noControlCharactersInRegex": "warn",
+        "noAssignInExpressions": "warn"
+      },
+      "complexity": {
+        "noForEach": "warn"
+      },
+      "style": {
+        "noParameterAssign": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      },
+      "nursery": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "@expo/vector-icons": "Import the family directly: @expo/vector-icons/Ionicons. The barrel re-exports every icon family, Metro cannot tree-shake it, and one barrel import anywhere puts all seven glyph maps and 18 unused fonts into the web bundle."
+            }
+          }
+        }
+      }
+    }
+  }
+}

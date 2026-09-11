@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *api.minds.com/api/v1/dispatcher/*)",
+      "Bash(curl *api.recursiv.io/api/v1/dispatcher/*)"
+    ]
+  }
+}

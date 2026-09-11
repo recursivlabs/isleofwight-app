@@ -1,0 +1,50 @@
+{
+  "name": "@minds/cli",
+  "version": "0.0.7",
+  "description": "CLI for the Minds platform — built on Recursiv",
+  "license": "FSL-1.1-ALv2",
+  "type": "module",
+  "bin": {
+    "minds": "./dist/bin/minds.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "pnpm build && node ../../scripts/verify-package-contents.mjs .",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ../../vitest.packages.config.ts --passWithNoTests"
+  },
+  "dependencies": {
+    "@minds/sdk": "workspace:*",
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.4.0",
+    "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/recursivlabs/minds.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/recursivlabs/minds/issues"
+  },
+  "homepage": "https://github.com/recursivlabs/minds/tree/main/packages/cli#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "sideEffects": false
+}

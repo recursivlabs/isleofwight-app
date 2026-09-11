@@ -1,0 +1,5 @@
+vitest run, branch feat/legacy-session-handoff-app, 2026-09-08
+ ✓ |unit| test/legacy-session-parse.test.ts (4 tests) 2ms
+ ✓ |unit| test/legacy-session-exchange.test.ts (3 tests) 4ms
+ Test Files  2 passed (2)
+      Tests  7 passed (7)

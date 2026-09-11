@@ -1,0 +1,119 @@
+{
+  "expo": {
+    "name": "Isle of Wight",
+    "slug": "isleofwight",
+    "version": "2.0.1",
+    "scheme": "isleofwight",
+    "icon": "./assets/icon-bulb.png",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    },
+    "ios": {
+      "bundleIdentifier": "com.minds.app",
+      "associatedDomains": [
+        "applinks:minds.on.minds.io",
+        "applinks:minds.on.recursiv.io",
+        "applinks:minds.com"
+      ],
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ],
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleDisplayName": "minds"
+      }
+    },
+    "android": {
+      "package": "com.minds.app",
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon-adaptive.png",
+        "backgroundColor": "#010100"
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "minds.on.minds.io"
+            },
+            {
+              "scheme": "https",
+              "host": "minds.on.recursiv.io"
+            },
+            {
+              "scheme": "https",
+              "host": "minds.com"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-dev-client",
+      [
+        "expo-notifications",
+        {
+          "color": "#1b6ef3"
+        }
+      ],
+      "expo-font",
+      "expo-video",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Minds uses your microphone to record voice notes in chats."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "imageWidth": 200,
+          "backgroundColor": "#010100"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Minds uses your photo library so you can attach photos and videos to posts and set your avatar.",
+          "cameraPermission": "Minds uses your camera so you can take photos and videos for posts."
+        }
+      ],
+      "./plugins/withAppIconSet",
+      "@sentry/react-native"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "owner": "minds-inc",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7a92bc49-6d7e-468f-af13-0a9aff39fc0e"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7a92bc49-6d7e-468f-af13-0a9aff39fc0e"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#08080a"/>
+  <image href="logo-dark-mode.svg" x="378" y="178" width="444" height="171"/>
+  <text
+    x="600"
+    y="431"
+    fill="#a8a8b0"
+    font-family="DejaVu Sans, Arial, sans-serif"
+    font-size="31"
+    font-weight="500"
+    text-anchor="middle"
+  >The open AI social platform</text>
+</svg>

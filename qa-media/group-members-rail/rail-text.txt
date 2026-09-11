@@ -1,0 +1,13 @@
+Local export of feat/group-members-rail, signed in as the Minds QA account (qa-minds3), 2026-09-05.
+Page text of the right rail, captured with Playwright (document.body.innerText):
+
+/community/b6706bc1-aa12-431e-844c-f7cde9d1c962 (private group, viewer is owner)
+  Members
+  QA Bot
+  Owner
+  More groups
+  MemeSupreme ...
+
+/community/8fcf3f64-8709-4ed9-bbf9-0c81dfce9a5a (public group, viewer not a member)
+  More groups
+  (no Members section: GET /communities/:id/members answered [] for a non-member)

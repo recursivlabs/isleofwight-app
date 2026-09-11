@@ -1,0 +1,3 @@
+branch fix/wallet-cash-row, 2026-09-09
+tsc errors in app/wallet.tsx: 0
+release-readiness: clean (716 tracked files, 8 baselined offender(s) remaining).

@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1
+
+# The Recursiv preview deployer uses this path for every Expo project. Minds is
+# a root-level workspace, so its image builds the repository root and serves
+# the exported web app with the same metadata server used in production.
+FROM node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 AS builder
+
+RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
+WORKDIR /app
+COPY . .
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+ARG EXPO_PUBLIC_RECURSIV_API_URL
+ARG EXPO_PUBLIC_RECURSIV_ORG_ID
+ARG EXPO_PUBLIC_RECURSIV_PROJECT_ID
+ARG EXPO_PUBLIC_SITE_URL
+ARG EXPO_PUBLIC_DEPLOY_ENV
+ARG EXPO_PUBLIC_SENTRY_ENABLED
+ENV EXPO_PUBLIC_RECURSIV_API_URL=$EXPO_PUBLIC_RECURSIV_API_URL
+ENV EXPO_PUBLIC_RECURSIV_ORG_ID=$EXPO_PUBLIC_RECURSIV_ORG_ID
+ENV EXPO_PUBLIC_RECURSIV_PROJECT_ID=$EXPO_PUBLIC_RECURSIV_PROJECT_ID
+ENV EXPO_PUBLIC_SITE_URL=$EXPO_PUBLIC_SITE_URL
+ENV EXPO_PUBLIC_DEPLOY_ENV=$EXPO_PUBLIC_DEPLOY_ENV
+ENV EXPO_PUBLIC_SENTRY_ENABLED=$EXPO_PUBLIC_SENTRY_ENABLED
+ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+RUN pnpm build
+
+FROM node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=8080
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/scripts/meta-server.mjs ./scripts/meta-server.mjs
+COPY --from=builder /app/scripts/write-build-info.mjs ./scripts/write-build-info.mjs
+EXPOSE 8080
+CMD ["node", "scripts/meta-server.mjs"]

@@ -1,0 +1,98 @@
+name: Android build and boot
+
+# This is deliberately not a 30-45 minute gate on every pull request. It runs
+# after native-impacting changes reach main, and remains available as a manual
+# release-time proof for JavaScript-only release trains.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-build-and-boot.yml
+      - app.json
+      - eas.json
+      - package.json
+      - pnpm-lock.yaml
+      - index.js
+      - babel.config.js
+      - metro.config.js
+      - plugins/**
+      - assets/**
+      - scripts/verify-android-boot.mjs
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  # P5.5: compile a native Android release APK, install it on an emulator, and
+  # prove the real application process survives launch. A web export cannot
+  # cover native boot regressions such as config-plugin or track-player faults.
+  android-build-and-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ANDROID_BOOT_APK: android/app/build/outputs/apk/release/app-release.apk
+      ANDROID_BOOT_OUTPUT_DIR: qa-media/android-boot
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_PUBLIC_RECURSIV_API_URL: https://api.staging.recursiv.io/api/v1
+      EXPO_PUBLIC_RECURSIV_ORG_ID: 019fd8e0-e381-728f-9565-f16dacf27b4f
+      EXPO_PUBLIC_RECURSIV_PROJECT_ID: 019fd8e0-e4e9-703a-b259-8cbb8519d9cb
+      EXPO_PUBLIC_SITE_URL: https://staging.terrapin.minds.com
+      SENTRY_DISABLE_AUTO_UPLOAD: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: pnpm install --frozen-lockfile
+      - name: Build Minds packages
+        run: pnpm packages:build
+      - name: Generate the Android native project
+        run: pnpm exec expo prebuild --platform android --no-install
+      - name: Build the release APK
+        run: >-
+          ./android/gradlew -p android app:assembleRelease --no-daemon --stacktrace
+          -PreactNativeArchitectures=x86_64
+          -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8"
+      # The GitHub image cannot retain the native toolchain, Gradle
+      # intermediates, dependencies, and a fresh API 35 emulator image at once.
+      # The APK is complete here, so remove only build-time state.
+      - name: Reclaim build-only disk for the emulator
+        run: |
+          test -s "$ANDROID_BOOT_APK"
+          df -h /
+          sudo rm -rf /usr/local/lib/android/sdk/ndk /usr/local/lib/android/sdk/cmake
+          rm -rf /home/runner/.gradle/caches /home/runner/.gradle/daemon /home/runner/.gradle/native /home/runner/.gradle/wrapper
+          rm -rf android/.gradle android/app/.cxx android/app/build/intermediates android/app/build/generated
+          rm -rf node_modules
+          test -s "$ANDROID_BOOT_APK"
+          df -h /
+      - name: Enable KVM for the Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and boot the release APK
+        # Immutable commit behind android-emulator-runner v2 as of 2026-08-26.
+        uses: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          script: node scripts/verify-android-boot.mjs
+      - name: Upload Android boot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-boot-evidence-${{ github.sha }}
+          path: qa-media/android-boot/
+          if-no-files-found: warn
+          retention-days: 14

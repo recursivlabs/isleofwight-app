@@ -1,0 +1,137 @@
+# P2c — the §5.6 evidence gate, ENFORCED rather than specified.
+#
+# §5.6 retracted the original "A-grade token-matching check" as unimplementable:
+# 9 of 11 issues did not carry the heading, the token set was never defined, and
+# the whole thing was evadable by omitting `Fixes #N`. Its replacement — this —
+# was specified in the same breath and then orphaned for weeks, which is why P2c
+# exists at all: a spec no step produces is a spec that never ships.
+#
+# WHAT IT ENFORCES, and it is deliberately one grep's worth of judgement:
+#   a PR touching the surfaces below must carry, in its BODY,
+#     · a NON-EMPTY  "## What remains unproved"  section, and
+#     · a            "## How it was tested"      section containing either a
+#                    qa-media/ path or an https link.
+#
+# The non-empty test is the point. A heading with nothing under it is the exact
+# failure mode §5.6 describes — the ritual performed without the content — so an
+# empty section fails identically to a missing one, and the message says which.
+#
+# WHY IT RUNS ON EVERY PR AND FILTERS INSIDE THE JOB, not via `on.paths`:
+# a required check that is skipped by a paths filter never reports, and GitHub
+# treats never-reported as pending forever — so the PR is blocked with no way to
+# clear it. controller-gate.yml hit exactly that and was rewritten the same way.
+# A PR touching none of the surfaces passes trivially and says so.
+name: Evidence gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  evidence:
+    name: evidence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Does this PR touch a guarded surface?
+        id: scope
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # The guarded set is §5.6's, verbatim.
+          GUARDED='^(app/|lib/|components/|eas\.json$|\.github/workflows/|lib/monitoring\.ts$|lib/storage\.ts$|lib/auth\.tsx$)'
+          changed=$(git diff --name-only "$BASE" "$HEAD" || git diff --name-only "$BASE"...)
+          hits=$(printf '%s\n' "$changed" | grep -E "$GUARDED" || true)
+          if [ -z "$hits" ]; then
+            echo "touched=false" >> "$GITHUB_OUTPUT"
+            echo "No guarded surface touched — this gate passes trivially."
+            printf 'files changed:\n%s\n' "$changed"
+          else
+            echo "touched=true" >> "$GITHUB_OUTPUT"
+            echo "Guarded surfaces touched:"; printf '%s\n' "$hits" | sed 's/^/  /'
+          fi
+
+      - name: The PR body must carry its evidence
+        if: steps.scope.outputs.touched == 'true'
+        env:
+          # Fetched live, NOT ${{ github.event.pull_request.body }}: the event
+          # payload is frozen at event time, so a body edited to carry its
+          # evidence still failed here until a new commit forced a fresh event
+          # (PR #281, 2026-08-01 — one full CI round wasted). A re-run and a
+          # rerun-after-edit now both judge the body as it IS.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          BODY="$(gh api "repos/${{ github.repository }}/pulls/${PR}" --jq '.body // ""')"
+          fail=0
+          say() { printf '  \033[31mFAIL\033[0m  %s\n' "$1"; fail=1; }
+          ok()  { printf '  \033[32mPASS\033[0m  %s\n' "$1"; }
+
+          # Extract a section: everything after the heading up to the next `## `.
+          # Here-strings throughout, never `printf | grep -q` — that pattern took
+          # SIGPIPE under `set -o pipefail` and made the controller gate report a
+          # false failure (§5.49). Same class of bug, so the same avoidance.
+          section() { awk -v h="$1" '
+            $0 ~ "^##[[:space:]]*"h { grab=1; next }
+            /^##[[:space:]]/        { grab=0 }
+            grab                    { print }' <<<"$BODY"; }
+
+          if ! grep -qiE '^##[[:space:]]*What remains unproved' <<<"$BODY"; then
+            say 'no "## What remains unproved" section'
+          else
+            content=$(section 'What remains unproved' | tr -d '[:space:]')
+            if [ -z "$content" ]; then
+              say '"## What remains unproved" is present but EMPTY — a heading with nothing under it is the failure this gate exists to catch'
+            else
+              ok '"## What remains unproved" present and non-empty'
+            fi
+          fi
+
+          if ! grep -qiE '^##[[:space:]]*How it was tested' <<<"$BODY"; then
+            say 'no "## How it was tested" section'
+          else
+            tested=$(section 'How it was tested')
+            # The token must be followed by an actual path or URL body. The first
+            # cut of this check was `grep -qE 'qa-media/|https://'`, and run
+            # 30603990840 passed a section whose entire content was the sentence
+            # "carries neither a `qa-media/` path nor a link" — the bare token in
+            # PROSE satisfied it. A check satisfied by the SHAPE of a thing rather
+            # than the thing is the exact class of defect §5.6 was written about,
+            # so it is fixed rather than tolerated.
+            if grep -qE '(^|[[:space:]`(])(qa-media/[A-Za-z0-9._/-]+|https://[A-Za-z0-9._~:/?#@!$&*+,;=%-]+)' <<<"$tested"; then
+              ok '"## How it was tested" carries a real qa-media/ path or https URL'
+            else
+              say '"## How it was tested" names no re-fetchable artifact — §1.3 wants a qa-media/ path or an https URL, and MENTIONING the token is not supplying one'
+            fi
+          fi
+
+          echo
+          if [ "$fail" -ne 0 ]; then
+            cat <<'MSG'
+          This PR touches app/, lib/, components/, eas.json, .github/workflows/,
+          lib/monitoring.ts, lib/storage.ts or lib/auth.tsx, so §5.6 requires its
+          body to carry:
+
+            ## What remains unproved
+            <what you did NOT establish — the honest gaps. Not "nothing".>
+
+            ## How it was tested
+            <a qa-media/ path or an https link — a run, a URL, a recording>
+
+          The first section is the one that matters. Every PR claims what it
+          proved; this gate exists because almost none state what they did not.
+          MSG
+            exit 1
+          fi
+          echo "evidence gate: PASS"
+
+      - name: Trivially passing
+        if: steps.scope.outputs.touched != 'true'
+        run: echo "No guarded surface touched — nothing to evidence."

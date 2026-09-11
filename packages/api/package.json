@@ -1,0 +1,51 @@
+{
+  "name": "@minds/api",
+  "version": "0.0.1",
+  "description": "Typed REST contract for the Minds API — built on Recursiv",
+  "license": "FSL-1.1-ALv2",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/recursivlabs/minds.git",
+    "directory": "packages/api"
+  },
+  "bugs": {
+    "url": "https://github.com/recursivlabs/minds/issues"
+  },
+  "homepage": "https://github.com/recursivlabs/minds/tree/main/packages/api#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "pnpm build && node ../../scripts/verify-package-contents.mjs .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ../../vitest.packages.config.ts --passWithNoTests"
+  },
+  "dependencies": {
+    "@minds/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2"
+  }
+}

@@ -1,0 +1,196 @@
+name: Staging smoke
+
+# P4(4): a SECOND monitor against staging. smoke.yml is NOT repointed — its own
+# header says it drives the full social loop against PRODUCTION every 6 hours,
+# and `git ls-tree origin/main .github/workflows/` shows it is the estate's only
+# continuous production monitor. Repointing it would trade the production
+# monitor for a staging one, which is not what P4 asks for.
+#
+# Staging is provisioned. This workflow retains an explicit missing-credential
+# branch so a future secret deletion cannot masquerade as a parity pass: a green
+# check on "we could not test anything" is the exact false-green this ladder
+# exists to prevent.
+
+on:
+  schedule:
+    - cron: '30 */6 * * *'   # offset from smoke.yml's 0 */6 so they never collide
+  # Post-merge signal: a bad merge shows up on the next push to main, not up
+  # to 6 hours later on the cron.
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  # ── The staging WEB surface, which exists as of 2026-07-31 ─────────────────
+  # Its own job, deliberately, so it reports independently of the parity job
+  # below. That job fails on purpose until P4(2) provisions the staging org; if
+  # this check lived inside it, a working staging frontend would be reported as
+  # broken for a reason that has nothing to do with it — and nobody would learn
+  # anything from either signal.
+  #
+  # What it guards: staging.terrapin.minds.com went up after a Coolify
+  # app was corrected (build_pack dockerfile→nixpacks, NIXPACKS_NODE_VERSION=20).
+  # Nothing watched it, and the failure mode this estate has already lived
+  # through is a surface going stale for days while a status field says fine.
+  staging-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      STAGING_WEB: https://staging.terrapin.minds.com
+    steps:
+      - name: Staging web surface serves the app
+        run: |
+          set -o pipefail
+          body=$(mktemp)
+          code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 30 "$STAGING_WEB/")
+          echo "GET $STAGING_WEB/ -> $code  ($(wc -c <"$body") bytes)"
+          [ "$code" = "200" ] || { echo "::error::staging web not serving ($code)"; exit 1; }
+
+          # Not just "something answered". The Expo bundle reference is the
+          # discriminator: a parked page, a Traefik 503 body or a redirect stub
+          # all return bytes, and one of those is exactly what a half-finished
+          # deploy looks like. §5.20 is the row this rule comes from.
+          bundle=$(grep -oE '_expo/static/js/web/index-[a-f0-9]{32}\.js' "$body" | head -1)
+          [ -n "$bundle" ] || { echo "::error::200 but no Expo bundle — not the app"; head -c 400 "$body"; exit 1; }
+          echo "bundle: $bundle"
+
+          # And the bundle itself must be fetchable, not merely referenced.
+          bundle_body=$(mktemp)
+          bcode=$(curl -sS -o "$bundle_body" -w '%{http_code}' --max-time 60 "$STAGING_WEB/$bundle")
+          echo "GET $bundle -> $bcode"
+          [ "$bcode" = "200" ] || { echo "::error::bundle referenced but not served ($bcode)"; exit 1; }
+
+          # A staging-looking hostname once served a bundle built with the
+          # PRODUCTION API and tenant IDs. That made login fail on the branded
+          # origin and, worse, meant staging actions could target production.
+          # Prove the effective app constants are staging-scoped on every run.
+          grep -Fq 'https://api.staging.recursiv.io/api/v1' "$bundle_body" || {
+            echo "::error::staging bundle is not wired to the staging API"
+            exit 1
+          }
+          grep -Fq '019fd8e0-e381-728f-9565-f16dacf27b4f' "$bundle_body" || {
+            echo "::error::staging org ID is absent from the bundle"
+            exit 1
+          }
+          grep -Fq '019fd8e0-e4e9-703a-b259-8cbb8519d9cb' "$bundle_body" || {
+            echo "::error::staging project ID is absent from the bundle"
+            exit 1
+          }
+          ! grep -Fq '019d517b-bb87-744d-92db-b3801dc15927' "$bundle_body" || {
+            echo "::error::production Minds org ID leaked into the staging bundle"
+            exit 1
+          }
+          ! grep -Fq '019d5190-f0c0-717e-a1bd-ef9c335292b9' "$bundle_body" || {
+            echo "::error::production Minds project ID leaked into the staging bundle"
+            exit 1
+          }
+
+  smoke-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Shared with ci.yml's e2e job. Both use the same staging QA account, so
+    # serialize their sign-ins without dropping pending required checks.
+    concurrency:
+      group: minds-staging-auth
+      queue: max
+    env:
+      STAGING_ORIGIN: https://api.staging.recursiv.io
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # The origin is up TODAY — this is the half of staging that already exists.
+      - name: Staging origin answers
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$STAGING_ORIGIN/api/v1/health")
+          echo "GET $STAGING_ORIGIN/api/v1/health -> $code"
+          [ "$code" = "200" ] || { echo "::error::staging origin not healthy ($code)"; exit 1; }
+
+      - name: Branded staging origin is allowed to authenticate
+        run: |
+          headers=$(mktemp)
+          code=$(curl -sS -o /dev/null -D "$headers" -w '%{http_code}' \
+            -X OPTIONS "$STAGING_ORIGIN/api/auth/sign-in/email" \
+            -H 'Origin: https://staging.terrapin.minds.com' \
+            -H 'Access-Control-Request-Method: POST' \
+            -H 'Access-Control-Request-Headers: content-type,x-recursiv-app-project')
+          echo "OPTIONS sign-in from branded staging origin -> $code"
+          [ "$code" = "204" ] || { echo "::error::staging auth preflight failed ($code)"; exit 1; }
+          tr -d '\r' < "$headers" | grep -Fqx \
+            'access-control-allow-origin: https://staging.terrapin.minds.com' || {
+            echo "::error::staging API did not allow the branded staging origin"
+            exit 1
+          }
+
+      # The credentialed half. Named credentials, not an assumption.
+      - name: Staging credentials present
+        id: creds
+        env:
+          STAGING_QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          STAGING_QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+          STAGING_ORG_ID: ${{ secrets.STAGING_ORG_ID }}
+        run: |
+          missing=""
+          [ -z "$STAGING_QA_EMAIL" ]    && missing="$missing STAGING_QA_EMAIL"
+          [ -z "$STAGING_QA_PASSWORD" ] && missing="$missing STAGING_QA_PASSWORD"
+          [ -z "$STAGING_ORG_ID" ]      && missing="$missing STAGING_ORG_ID"
+          if [ -n "$missing" ]; then
+            # NOT a failure. "I could not look" and "the thing is broken" are
+            # different states, and this workflow spent a week reporting the
+            # first as the second — a permanent red on main every 6 hours,
+            # which is how a team learns to ignore smoke reds. That is the
+            # dark-monitor failure (P1.3) wearing its opposite face.
+            #
+            # It must not be a plain green either: P4(4)'s exit is "both
+            # workflows success in the same 6h window", so an unconditional
+            # success here would let a future predicate certify staging parity
+            # that never ran. The discriminator is the STEP, not the run:
+            # `Parity scorecard against staging` is skipped when unprovisioned,
+            # and confirm-artifacts.sh's P4.4 asserts that step COMPLETED.
+            echo "::warning::staging is NOT provisioned — missing secrets:$missing"
+            {
+              echo "### STAGING-UNPROVISIONED"
+              echo "Missing repo secrets:$missing"
+              echo ""
+              echo "P4(2) provisions the Minds org/project on the staging origin."
+              echo "Parity was **not** exercised. This run proves the origin answers, nothing more."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      # P4(2): bind the org compiled into .env.staging to a row fetched from
+      # the staging origin. The helper mints a one-use key and revokes it before
+      # exit; its output redacts every credential while retaining HTTP status
+      # and both ids for the artifact. This runs BEFORE parity because parity
+      # writes throwaway data; a mismatched tenant must fail before any write.
+      - name: Staging org resolves and matches app config
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          STAGING_QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          STAGING_QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+          STAGING_ORG_ID: ${{ secrets.STAGING_ORG_ID }}
+          STAGING_PROJECT_ID: 019fd8e0-e4e9-703a-b259-8cbb8519d9cb
+          STAGING_BASE_URL: https://api.staging.recursiv.io/api/v1
+        run: node scripts/verify-staging-org.mjs
+
+      - name: Parity scorecard against staging
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+          # verify-parity.mjs reads PARITY_BASE_URL. Using the Expo build-time
+          # variable here silently fell back to the production API.
+          PARITY_BASE_URL: https://api.staging.recursiv.io/api/v1
+          EXPO_PUBLIC_RECURSIV_ORG_ID: ${{ secrets.STAGING_ORG_ID }}
+          EXPO_PUBLIC_RECURSIV_PROJECT_ID: 019fd8e0-e4e9-703a-b259-8cbb8519d9cb
+        run: node scripts/verify-parity.mjs

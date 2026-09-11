@@ -1,0 +1,14 @@
+Local export of feat/signed-out-app-shell, no session, 2026-09-05. Page text captured with Playwright.
+
+/discover (signed out)
+  nav: Discover | Live | Groups | Log in | New here? Create account
+  body: You are looking at Minds | The newest public posts, live. Sign in to vote, reply, remind, follow people and join groups. | Sign in | Create account | Nothing to show yet
+  (feed empty here: the local rig cannot reach the public tRPC route, and the unscoped public list on the API returned [] until recursiv's public-latest change; see the PR)
+
+/post/e8ba123c-0fed-48dc-9602-c2cf422045eb (signed out)
+  nav: Discover | Live | Groups | Log in | New here? Create account
+  body: Post | Jack | @jack | Nov 5, 2025 | Lol the password of the Louvre's video surveillance system was Louvre | PC Gamer card ...
+
+/ (landing, signed out)
+  think freely | Send code | Use password instead | Want to look around first? Explore Minds | By signing in you agree to the Terms and Privacy.
+  (no nav: the landing stands alone)

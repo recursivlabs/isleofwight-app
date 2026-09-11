@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Blocks a commit that touches the controller or its entry docs while
+# scripts/check-controller.sh is failing.
+#
+# This is the LOCAL half of the gate. The CI half (controller-gate.yml) needs a
+# `workflow` OAuth scope this repo's agent sessions do not hold, so it is staged
+# at scripts/pending-workflows/. Until that lands, this is what stops a broken
+# controller from being committed at all — which is strictly earlier than CI.
+#
+# Install (repo-local, reversible with `git config --unset core.hooksPath`):
+#   git config core.hooksPath scripts/hooks
+#
+# Bypass deliberately, when you know why:  git commit --no-verify
+
+set -uo pipefail
+GATED='docs/goal-prompt\.md|LAUNCH-PROMPT\.md|HANDOFF-jack\.md|HANDOFF-minds-mcp\.md|scripts/check-controller\.sh|scripts/check-xrefs\.py'
+staged=$(git diff --cached --name-only | grep -E "$GATED" || true)
+[[ -z "$staged" ]] && exit 0
+
+root="$(git rev-parse --show-toplevel)"
+[[ -x "$root/scripts/check-controller.sh" ]] || { echo "pre-commit: gate script missing — not blocking"; exit 0; }
+
+echo "pre-commit: controller touched, running the gate —"
+printf '  %s\n' $staged
+if "$root/scripts/check-controller.sh" >/tmp/precommit-gate.log 2>&1; then
+  echo "pre-commit: $(tail -1 /tmp/precommit-gate.log)"
+  exit 0
+fi
+echo
+echo "════ COMMIT BLOCKED — the controller does not pass its own gate ════"
+grep -E 'FAIL|CHECKS FAILED' /tmp/precommit-gate.log | sed 's/^/  /'
+echo
+echo "Full log: /tmp/precommit-gate.log"
+echo "Fix the failures, or commit with --no-verify if you know why you are bypassing."
+exit 1

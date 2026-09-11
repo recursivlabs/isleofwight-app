@@ -1,0 +1,158 @@
+name: Controller gate
+
+# scripts/check-controller.sh asserts docs/goal-prompt.md against itself: the
+# denominator, the sort order, table well-formedness, the Cycle-0 root split,
+# that all §3.1 scores recompute, that forward BASELINE lines match the live
+# denominator, that no blocked row is unreachable, that cross-repo citation
+# anchors resolve, that no §-reference dangles, and that §10's row count agrees
+# with the prose that counts it.
+#
+# It existed only as a local command someone had to remember to run — which is
+# the same weakness as a prose rule, one level up. §5.39, §5.41 and §5.43 all
+# record the same failure: a rule written down did not survive the next edit.
+# This is that rule made unforgettable.
+
+# NO `paths:` FILTER — deliberate, and it is what makes this gate REQUIRABLE.
+# A path-filtered workflow does not report a conclusion on PRs that miss the
+# filter, so naming it in required_status_checks deadlocks every unrelated PR:
+# the check is "expected" forever and nothing can merge. §1.0's condition (b)
+# for CI acting as a second party is that the workflow IS a required check —
+# so the filter had to move from the trigger into the job, where a PR that
+# touches no controller file still reports success in ~5 seconds.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    # check [12] reads this repo's `ladder` issues. Without an explicit grant the
+    # default GITHUB_TOKEN returns an empty list rather than an error, which the
+    # check correctly refuses to treat as a pass.
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    env:
+      # `secrets` is not available in a step-level `if:` — it must be hoisted to
+      # env first, or the expression silently never matches.
+      HAS_ENGINE_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # The path filter that used to live on the trigger. Here it decides how
+      # much WORK to do, not whether to REPORT — so the check always produces a
+      # conclusion and can be named in required_status_checks without
+      # deadlocking PRs that touch no controller file.
+      - name: Does this change touch the controller?
+        id: scope
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            echo "touched=true" >> "$GITHUB_OUTPUT"; echo "no base ref — running the gate"; exit 0
+          fi
+          if git diff --name-only "$BASE" HEAD | grep -qE '^(docs/goal-prompt\.md|LAUNCH-PROMPT\.md|HANDOFF-jack\.md|scripts/check-controller\.sh|scripts/check-xrefs\.py|\.github/workflows/controller-gate\.yml)$'; then
+            echo "touched=true" >> "$GITHUB_OUTPUT"; echo "controller touched — running the gate"
+          else
+            echo "touched=false" >> "$GITHUB_OUTPUT"; echo "no controller file changed — gate passes trivially"
+          fi
+
+      # OPTIONAL: check [8] verifies cross-repo citation anchors against
+      # recursivlabs/recursiv at origin/main. That repo is private, and the
+      # default GITHUB_TOKEN cannot read it — so without a token the check
+      # SKIPS. Provide ENGINE_REPO_TOKEN to cover anchors in CI too.
+      - name: Check out the engine repo (optional — enables check [8])
+        if: env.HAS_ENGINE_TOKEN == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: recursivlabs/recursiv
+          token: ${{ secrets.ENGINE_REPO_TOKEN }}
+          path: .engine
+          fetch-depth: 0
+
+      - name: Run the gate
+        id: gate
+        if: steps.scope.outputs.touched == 'true'
+        env:
+          ENGINE: ${{ github.workspace }}/.engine
+          # check [12] reads this repo's `ladder` issues. Without a token `gh` is
+          # unauthenticated and the check FAILS by design — it refuses to report
+          # green on something it could not examine. The default GITHUB_TOKEN can
+          # read issues in this repo, which is all [12] needs.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          ./scripts/check-controller.sh 2>&1 | tee gate.log
+
+      # A green run proves the gate executed. It does NOT prove the gate can
+      # fail — the exact defect CHANGELOG 37 catalogued nineteen times, where an
+      # exit closed on an absence with no proof the pipe was live. So every run
+      # also feeds the gate a deliberately broken controller and requires a
+      # NON-ZERO exit. If this step passes, the gate is not gating.
+      # The coarse control below applies ONE corruption and asserts the gate
+      # fails SOMEHOW, so a check that has quietly stopped working hides behind
+      # a sibling's failure. This runs a case PER CHECK and asserts each trips
+      # ITS OWN check. It found that `grep -qiE '[a-z]{4,}'` read uppercase row
+      # ids as prose, so PAPI/PMCP/PSDK/PCLI — and P13's whole dependency list —
+      # were never validated at all.
+      - name: Gate self-test — each check must catch its own corruption
+        if: steps.scope.outputs.touched == 'true'
+        env:
+          # REQUIRED. The self-test runs the gate on the REAL controller as its
+          # positive control, and check [12] reads the GitHub issue mirror —
+          # correctly refusing to count an unauthenticated run as a pass. Without
+          # this the positive control fails while "Run the gate" above succeeds,
+          # which is what happened on run 30605160163.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/gate-selftest.sh
+
+      - name: Negative control — the gate must reject a broken controller
+        if: steps.scope.outputs.touched == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp docs/goal-prompt.md /tmp/broken.md
+          # Change one N from 2 to 9: moves the denominator away from every
+          # published figure, so checks [1] and [6] must both go red.
+          perl -0pi -e 's/\| \*\*PA\*\* \| The §1\.5 circling detector runs unattended \| 2 \|/| **PA** | The §1.5 circling detector runs unattended | 9 |/' /tmp/broken.md
+          if ! cmp -s docs/goal-prompt.md /tmp/broken.md; then
+            echo "corruption applied"
+          else
+            echo "::error::could not corrupt the copy — the PA row shape changed, so this control proves nothing"
+            exit 1
+          fi
+          if ./scripts/check-controller.sh /tmp/broken.md > broken.log 2>&1; then
+            echo "::error::THE GATE PASSED A BROKEN CONTROLLER — it is not gating"
+            cat broken.log
+            exit 1
+          fi
+          echo "gate correctly rejected the broken copy:"
+          grep -E 'FAIL|CHECKS FAILED' broken.log || true
+
+      # §1.0's rule: never truncate silently. If check [8] skipped because the
+      # engine repo was unavailable, say so loudly — otherwise a green badge
+      # reads as "anchors verified" when they were never checked.
+      - name: Report any check that was skipped
+        if: always()
+        run: |
+          if [ ! -f gate.log ]; then
+            echo "gate did not run — no controller file changed in this diff"
+            exit 0
+          fi
+          if grep -q 'skipping cross-repo anchors' gate.log; then
+            echo "::warning::check [8] SKIPPED — no engine checkout, so cross-repo citation anchors were NOT verified in CI. Set the ENGINE_REPO_TOKEN secret to cover them."
+          else
+            echo "check [8] ran — cross-repo anchors verified"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-log
+          path: |
+            gate.log
+            broken.log
+          if-no-files-found: warn

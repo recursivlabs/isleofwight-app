@@ -1,0 +1,19 @@
+# MINDS 2.0 — CONTENT INTELLIGENCE → ADAPTIVE PRODUCT MODE
+
+Read `AGENTS.md`, `docs/goal-prompt.md`, and `docs/content-intelligence-open-network-plan.md` fully; run `bash scripts/loop-status.sh`. Controller wins. Preserve its 113-artifact denominator, gates, claims/heartbeats, exits, single-writer/verifier and platform/owner/reserved lanes; dynamic work stays in dispatcher.
+
+MISSION: build shared Recursiv Content Intelligence and Minds’ open-web product with selective, provenance/citation/correction-aware, cost-bounded ingestion and interoperability. Popularity creates candidates—never posts or distribution permission.
+
+OWNER SEQUENCING: no parallel P8 queue/deferral/release test. Follow `scripts/loop-status.sh`; claim its top `AVAILABLE NOW` row, including `minds-ladder-p8`. Until P8 exits, external material stays scoped/unpublished; no serving, bulk ingest, outbound, or autonomy.
+
+LIVE CYCLE: read Minds MCP product/dispatcher and Recursiv MCP platform state; inspect all layers, claims, both repos, and related work/reservations. Search first; extend; dedupe. Use only dispatcher score; claim top actionable task—never `claim_next_task`. Respect ownership/exits/heartbeats. Worker releases; another closes.
+
+ARCHITECTURE: Recursiv is the engine; Minds owns product/editorial policy. Keep the plan’s four layers. Audit all nine: ActivityPub, Bluesky, Nostr, RSS/Atom, Hacker News, email/newsletters, web search, podcasts, and music. Capabilities are truthful; unsupported never simulates success. Preserve legacy ActivityPub identity and Jack’s reserved lane. Enforce `adapter → raw → normalize → identity/revision/dedupe → fail-closed quarantine → budgeted enrichment → approval → canonical event → scoped delivery`. Build deterministic graph/registry, durable cursors/idempotency/outbox/DLQ/replay/backpressure/budgets, provenance, corrections/tombstones, and no connector LLM calls. Use progressive-cost cited intelligence. Add Event Registry/Openverse and labeled unpublished Breaking/World News, Machine State, and Skywatch Communities. Prove no-write simulation and synthetic two-network/two-project isolation.
+
+SYNC: generic schema/workers/connectors/API/SDK/MCP/CLI belong in canonical `recursivlabs/recursiv`; Minds owns policy, Communities, approvals, discussions and UX. Never bypass SDK gaps. Verify Recursiv first; stage its exact SHA; then pin/consume in Minds feature-off/shadow-only. Activate only after coupled CI, isolation, rollback, P8, and controller gates. Avoid Jack-owned federation identity, discovery/ranking, Boost, and claims; require handoff.
+
+EXECUTE: tasks name evidence, metric, risks, dependencies, smallest ship, verification, rollback, and kill criteria. Baseline → hypothesis → ship → green CI → stage → observe → record → rescore/revise/kill → reconcile. Risks/blockers change score; never bypass it. No deploy, migration, publication, provider activation, or exposure without named gate/owner.
+
+EXIT: prove truthful capabilities; scoped durable cost-bounded ingestion; canonical provenance/thread/revision/deletion/correction; isolation, observability, kill switches, invisible quarantine; three shadow Communities passing quality/latency/cost; completed P8; human-approved publication; and approved ActivityPub/Bluesky/Nostr interaction. Only Bill or Jack authorizes activation.
+
+ADAPTIVE PRODUCT MODE keeps dispatcher/gates/metrics/Recursiv-first sync: pursue stability/scale/security/sustainability/community/ethical viral growth; Minds token/feedback/protocol portability stays scored. Jack's Boost needs §1.9b handoff. Fishtank and Battlechat outcomes and Inverted World news port need registry assignment + §1.9b handoff; read-only till both. Public launch is Bill-only, not evolution's end; only Bill or Jack declares completion. Stop at hard risk, destructive ambiguity, genuinely red required CI, unresolved merge/ownership conflict or reserved human decision; else ship/measure/learn.

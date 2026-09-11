@@ -1,0 +1,49 @@
+{
+  "name": "@minds/tenant-overlay",
+  "version": "0.0.1",
+  "description": "Minds tenant branding and landing-page overlay for the Recursiv platform",
+  "license": "FSL-1.1-ALv2",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/recursivlabs/minds.git",
+    "directory": "packages/tenant-overlay"
+  },
+  "bugs": {
+    "url": "https://github.com/recursivlabs/minds/issues"
+  },
+  "homepage": "https://github.com/recursivlabs/minds/tree/main/packages/tenant-overlay#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "pnpm build && node ../../scripts/verify-package-contents.mjs .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ../../vitest.packages.config.ts --passWithNoTests"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,41 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+  <stop offset="0" stop-color="#ffd463"/><stop offset="0.5" stop-color="#e9ab2e"/><stop offset="1" stop-color="#b87b12"/>
+ </linearGradient>
+ <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+ </linearGradient>
+ <radialGradient id="vig" cx="0.5" cy="0.5" r="0.78"><stop offset="0.65" stop-color="#7a4d05" stop-opacity="0"/><stop offset="1" stop-color="#7a4d05" stop-opacity="0.45"/></radialGradient>
+ <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect width="1024" height="1024" fill="url(#bg)"/>
+
+<!-- soft grounding shadow -->
+<ellipse cx="512" cy="836" rx="200" ry="30" fill="#4a2f02" opacity="0.25" filter="url(#soft)"/>
+
+<!-- glass: circle head flowing into the neck, one closed path -->
+<path d="M 362,668
+         C 332,578 276,550 276,400
+         A 236,236 0 1 1 748,400
+         C 748,550 692,578 662,668
+         Z"
+      fill="none" stroke="#0d0d0d" stroke-width="52" stroke-linejoin="round"/>
+
+<!-- interior facet signature: three confident angular strokes -->
+<g stroke="#0d0d0d" stroke-width="30" stroke-linecap="round" fill="none">
+  <path d="M 394,440 L 508,304 L 632,434"/>
+  <path d="M 508,304 L 510,588"/>
+</g>
+
+<!-- screw: solid black, rounded, with two gold grooves; pointed tip -->
+<g>
+  <rect x="362" y="662" width="300" height="132" rx="34" fill="#0d0d0d"/>
+  <rect x="388" y="702" width="248" height="14" rx="7" fill="#e9ab2e"/>
+  <rect x="388" y="740" width="248" height="14" rx="7" fill="#e9ab2e"/>
+  <path d="M 426,788 L 598,788 L 512,856 Z" fill="#0d0d0d"/>
+</g>
+
+<ellipse cx="512" cy="-460" rx="972" ry="819" fill="url(#sheen)"/>
+<rect width="1024" height="1024" fill="url(#vig)"/>
+</svg>

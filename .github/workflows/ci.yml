@@ -1,0 +1,111 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Typecheck + unit tests gate every PR. The build used to be the only check,
+  # so type errors and logic regressions shipped to deploy unnoticed.
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4  # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Documentation surface sync
+        run: pnpm docs:check
+      - name: Minds package suite
+        run: pnpm packages:check
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test hygiene
+        run: node scripts/check-test-hygiene.mjs
+      - name: Release readiness
+        run: node scripts/check-release-readiness.mjs
+      - name: Unit tests
+        run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4  # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build Minds packages
+        run: pnpm packages:build
+      - run: pnpm exec expo export --platform web
+        env:
+          EXPO_PUBLIC_RECURSIV_API_URL: https://api.recursiv.io/api/v1
+          EXPO_PUBLIC_RECURSIV_ORG_ID: 019d517b-bb87-744d-92db-b3801dc15927
+      # Execute what we are about to ship. `expo export` exiting 0 says the
+      # bundle was written, not that it boots — 70d19f1 exported cleanly and
+      # took the site down, because nothing in CI ever RAN the artifact. #193.
+      - name: Web boot smoke
+        run: node scripts/check-web-boot.mjs
+
+  # Browser E2E smoke against the deployed staging web surface. The staging
+  # API's CORS allowlist rejects localhost origins, so a locally exported
+  # bundle cannot sign in — the deployed staging origin is the testable
+  # surface, and also the one users get.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # This job and smoke-staging.yml authenticate the same staging QA account.
+    # Queue them across workflows so a merge burst cannot make our own checks
+    # compete for the server's auth budget. queue:max preserves every required
+    # check instead of canceling an older pending PR run.
+    concurrency:
+      group: minds-staging-auth
+      queue: max
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4  # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # FAIL LOUDLY when the secrets are absent. A silent skip here would be
+      # a green check on "we could not test anything" — the exact false-green
+      # this repo's smoke workflows exist to prevent.
+      - name: Require staging QA credentials
+        env:
+          STAGING_QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          STAGING_QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+        run: |
+          missing=""
+          [ -z "$STAGING_QA_EMAIL" ]    && missing="$missing STAGING_QA_EMAIL"
+          [ -z "$STAGING_QA_PASSWORD" ] && missing="$missing STAGING_QA_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::E2E cannot run — missing repo secrets:$missing. This job never skips silently."
+            exit 1
+          fi
+      - name: Install Playwright chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright smoke (staging)
+        env:
+          STAGING_QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          STAGING_QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+        run: pnpm e2e
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

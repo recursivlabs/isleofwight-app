@@ -1,0 +1,4 @@
+vitest run, branch fix/billing-legacy-membership, 2026-09-08
+ ✓ |unit| test/billing-labels.test.ts (3 tests) 34ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

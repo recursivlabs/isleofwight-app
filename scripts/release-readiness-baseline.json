@@ -1,0 +1,12 @@
+{
+  "banned-filename": [
+    "HANDOFF-context.md",
+    "HANDOFF-jack.md",
+    "HANDOFF-minds-mcp.md",
+    "LAUNCH-PROMPT.md",
+    "NOTE-to-jack.md",
+    "docs/goal-prompt.md"
+  ],
+  "agent-string": ["HANDOFF-context.md"],
+  "tracked-env": [".env.staging"]
+}

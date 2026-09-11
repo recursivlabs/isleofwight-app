@@ -1,0 +1,68 @@
+name: Native release build
+
+# Native compile-and-boot coverage lives in android-build-and-boot.yml. This
+# workflow is the supported release lane: it creates signed EAS artifacts from
+# an exact commit without requiring a developer laptop.
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        required: true
+        default: android
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+      profile:
+        description: EAS build profile
+        required: true
+        default: android-internal
+        type: choice
+        options:
+          - android-internal
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-release-${{ inputs.platform }}-${{ inputs.profile }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Set up EAS
+        uses: expo/expo-github-action@v9
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Validate build selection
+        env:
+          PLATFORM: ${{ inputs.platform }}
+          PROFILE: ${{ inputs.profile }}
+        run: |
+          if [ "$PROFILE" = android-internal ] && [ "$PLATFORM" != android ]; then
+            echo "::error::The android-internal profile only supports the Android platform."
+            exit 1
+          fi
+      - name: Build signed native artifact on EAS
+        env:
+          PLATFORM: ${{ inputs.platform }}
+          PROFILE: ${{ inputs.profile }}
+        run: eas build --platform "$PLATFORM" --profile "$PROFILE" --non-interactive --freeze-credentials

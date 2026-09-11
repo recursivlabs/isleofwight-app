@@ -1,0 +1,87 @@
+# Mirrors recursivlabs/recursiv's config deliberately — same ecosystems, same
+# conservative settings — so the two repos in this estate behave the same way and
+# neither surprises whoever is on call.
+#
+# WHY THIS EXISTS. This repo had no dependabot config at all, so nothing opened
+# dependency PRs here while the engine received them routinely. Alerts were only
+# ever acted on when someone went looking: on 2026-08-09 a manual sweep took the
+# open count 86 -> 50 and criticals 4 -> 0 (#366, #367, #368). Nothing keeps that
+# from drifting straight back, and the next person to notice would again be
+# whoever happened to check.
+#
+# Tuned against the noise that makes teams mute these:
+#   · weekly, not daily
+#   · grouped, so a quiet week is one PR rather than nine
+#   · PR limits, so a busy week cannot bury the queue
+#   · NO major bumps — every one in this repo has needed judgement. `next` 16.x,
+#     `vite` 5 -> 6 and `brace-expansion` across majors were each looked at by
+#     hand, and `nanoid` was pinned wrong twice before landing on `>=5.1.16 <6`.
+#     Majors are proposed by a person here, not by a bot.
+#
+# Security fixes are NOT limited by any of the above: Dependabot raises security
+# updates regardless of `open-pull-requests-limit`, and the `ignore` below only
+# withholds MAJOR version bumps. A security fix available within the current
+# major still arrives on its own.
+version: 2
+updates:
+  # npm (pnpm workspace, single package at the root)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+      # ── Expo-SDK-managed packages ────────────────────────────────────────
+      # These are NOT versioned by semver in any way dependabot can reason
+      # about. The Expo SDK pins an exact set, and `expo install --check`
+      # enforces it; a "minor" bump of react-native is a framework upgrade, and
+      # in 0.x (react-native-worklets) a minor IS a breaking change.
+      #
+      # This is not hypothetical. The first PR this config produced (#376)
+      # grouped 19 updates and moved ELEVEN of these off the versions SDK 54
+      # expects:
+      #
+      #   react-native       0.81.5 -> 0.86.2   (expected 0.81.5)
+      #   react / react-dom  19.1.0 -> 19.2.8   (expected 19.1.0)
+      #   reanimated         4.1.7  -> 4.5.3    (expected ~4.1.1)
+      #   worklets           0.5.1  -> 0.11.3   (expected 0.5.1)
+      #   …plus screens, gesture-handler, safe-area-context, keyboard-controller
+      #
+      # `expo install --check` on that branch: "Your project may not work
+      # correctly until you install the expected versions." Typecheck happened
+      # to catch one symptom — StyleSheet.absoluteFillObject was removed in RN
+      # 0.86 — but that was luck. Most of this incoherence is native-runtime and
+      # would not surface until a device build.
+      #
+      # The unit of upgrade for these is the SDK: bump `expo`, then
+      # `expo install --fix`. Dependabot cannot do that, so it should not try.
+      #
+      # Security ALERTS are unaffected — they are raised against the repo
+      # regardless of whether a PR is opened, and remain visible in the
+      # Dependabot alerts view. What this suppresses is unsolicited version PRs.
+      - dependency-name: "expo"
+      - dependency-name: "expo-*"
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+      - dependency-name: "@types/react"
+      - dependency-name: "react-native"
+      - dependency-name: "react-native-*"
+      - dependency-name: "@react-native/*"
+      - dependency-name: "@react-navigation/*"
+      - dependency-name: "babel-preset-expo"
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+
+  # GitHub Actions — minor and patch only
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

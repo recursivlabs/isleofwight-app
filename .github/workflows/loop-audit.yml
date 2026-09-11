@@ -1,0 +1,39 @@
+name: Loop audit
+
+# PA — the §1.5 circling detector, unattended (docs/goal-prompt.md, row PA).
+# Ported structurally from recursiv/.github/workflows/compliance-checks.yml:
+# scheduled, issues:write, script does the judging, workflow does the posting.
+# The §1.5 detector must not be enforced only by the population it audits.
+
+on:
+  schedule:
+    - cron: '17 7 * * *' # daily, 07:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+concurrency:
+  group: loop-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      # Assert the detector reads the WHOLE log before letting it post about
+      # it. Four scheduled runs went green while posting tables with two
+      # contradictory verdicts per cell (#337) — a green job and a detector
+      # that answered the question are different claims.
+      - name: Self-test the detector
+        run: bash scripts/loop-audit-selftest.sh
+
+      - name: Evaluate §1.5 against the loop log and post the table
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          POST_MODE: post
+        run: bash scripts/loop-audit.sh

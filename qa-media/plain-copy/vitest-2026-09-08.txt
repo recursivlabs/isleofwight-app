@@ -1,0 +1,5 @@
+vitest run, branch fix/no-migration-copy, 2026-09-08
+ ✓ |unit| test/billing-labels.test.ts (3 tests) 13ms
+ ✓ |components| test/components/post-detail-revalidation.test.tsx (4 tests) 325ms
+ Test Files  2 passed (2)
+      Tests  7 passed (7)

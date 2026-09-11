@@ -1,0 +1,30 @@
+name: Production smoke (real-time social parity)
+
+# Synthetic monitoring: drives the full social loop (feed, follow, vote, reply,
+# repost, DM unread, notifications) against PRODUCTION with two real accounts.
+# If any check fails, this run fails — the alert that would have caught the
+# entirely-broken notification pipeline instead of waiting for a human to test.
+on:
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    # Requires repo secrets QA_EMAIL / QA_PASSWORD (an existing QA account on the
+    # Minds project). The script creates a throwaway second account per run and
+    # cleans up after itself.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4  # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Run parity scorecard against production
+        env:
+          QA_EMAIL: ${{ secrets.QA_EMAIL }}
+          QA_PASSWORD: ${{ secrets.QA_PASSWORD }}
+        run: node scripts/verify-parity.mjs

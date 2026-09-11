@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#171722"/>
+      <stop offset="0.5" stop-color="#0c0c13"/>
+      <stop offset="1" stop-color="#050508"/>
+    </linearGradient>
+    <radialGradient id="warm" cx="0.5" cy="0.58" r="0.62">
+      <stop offset="0" stop-color="#e9b94f" stop-opacity="0.18"/>
+      <stop offset="0.5" stop-color="#c08c2c" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cool" cx="0.15" cy="0.08" r="0.75">
+      <stop offset="0" stop-color="#5b6ea8" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheenFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.5" r="0.74">
+      <stop offset="0.6" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+    <linearGradient id="glassSweep" gradientUnits="userSpaceOnUse" x1="40" y1="30" x2="290" y2="380">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.36" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="0.52" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3a2404" stop-opacity="0.28"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#base)"/>
+  <rect width="1024" height="1024" fill="url(#cool)"/>
+  <rect width="1024" height="1024" fill="url(#warm)"/>
+
+  <!-- Grounded drop shadow: depth without glow -->
+  <g transform="translate(0,26)" opacity="0.6" filter="url(#soft)">
+    <g transform="translate(316.9,182.6) scale(1.8402) translate(-51,-27)">
+            <g id="Group-5" transform="translate(107.000000, 290.000000)">
+                <path d="M24.7524752,43 L22.7722772,72 L24.7524752,43 Z" id="Triangle-3" fill="#000000"></path>
+                <polygon id="Triangle-3" fill="#000000" points="0 62 25 41 50 82"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="0 0 0 62 25 41"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="75 41 50 82 100 62"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="100 62 75 41 100 0"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="0 0 100 0 50 82"></polygon>
+            </g>
+            <g id="Group" transform="translate(6.000000, 1.000000)">
+                <polygon id="Triangle-3" fill="#000000" points="111 100 217 144 141 205"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="191 26 251 88 217 144"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="101 289 211 257 201 289"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="91 257 141 205 101 289"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="51 88 111 26 111 100"></polygon>
+                <polygon id="Triangle-3" fill="#000000" points="141 205 211 257 217 144"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(91.982123, 202.376609) rotate(140.000000) translate(-91.982123, -202.376609) " points="56.1185344 168.858891 118.731412 243.589257 127.845712 161.163961"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(187.648863, 90.616899) rotate(-53.000000) translate(-187.648863, -90.616899) " points="134.026748 35.0492865 241.270978 54.4058156 162.679178 146.184512"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(112.700659, 170.148822) rotate(-53.000000) translate(-112.700659, -170.148822) " points="57.7008005 126.823779 167.700517 126.574001 101.898239 213.723643"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(148.569878, 267.401001) rotate(-53.000000) translate(-148.569878, -267.401001) " points="102.691884 242.40861 193.849867 223.801568 194.447872 311.000435"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(214.000000, 200.500000) rotate(-53.000000) translate(-214.000000, -200.500000) " points="167.071649 232.106642 260.928351 168.893358 249.86099 227.318639"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(55.981655, 127.407987) rotate(-53.000000) translate(-55.981655, -127.407987) " points="0.981796369 155.102831 84.4562375 99.713142 110.981513 154.853053"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(254.000000, 138.000000) rotate(-53.000000) translate(-254.000000, -138.000000) " points="226.941031 112.061376 292.12633 105.513342 215.87367 170.486658"></polygon>
+                <polygon id="Triangle-3" fill="#000000" transform="translate(146.320889, 50.144248) rotate(160.000000) translate(-146.320889, -50.144248) " points="96.0784387 57.5512633 196.563339 15.3756208 171.253848 84.9128748"></polygon>
+            </g>
+        </g>
+  </g>
+
+  <!-- The bulb -->
+  <g transform="translate(316.9,182.6) scale(1.8402) translate(-51,-27)">
+            <g id="Group-5" transform="translate(107.000000, 290.000000)">
+                <path d="M24.7524752,43 L22.7722772,72 L24.7524752,43 Z" id="Triangle-3" fill="#656565"></path>
+                <polygon id="Triangle-3" fill="#656565" points="0 62 25 41 50 82"></polygon>
+                <polygon id="Triangle-3" fill="#787778" points="0 0 0 62 25 41"></polygon>
+                <polygon id="Triangle-3" fill="#5C5C5C" points="75 41 50 82 100 62"></polygon>
+                <polygon id="Triangle-3" fill="#787778" points="100 62 75 41 100 0"></polygon>
+                <polygon id="Triangle-3" fill="#4A4A4A" points="0 0 100 0 50 82"></polygon>
+            </g>
+            <g id="Group" transform="translate(6.000000, 1.000000)">
+                <polygon id="Triangle-3" fill="#FED12F" points="111 100 217 144 141 205"></polygon>
+                <polygon id="Triangle-3" fill="#FED12F" points="191 26 251 88 217 144"></polygon>
+                <polygon id="Triangle-3" fill="#FED12F" points="101 289 211 257 201 289"></polygon>
+                <polygon id="Triangle-3" fill="#FED12F" points="91 257 141 205 101 289"></polygon>
+                <polygon id="Triangle-3" fill="#FED12F" points="51 88 111 26 111 100"></polygon>
+                <polygon id="Triangle-3" fill="#FFF3CB" points="141 205 211 257 217 144"></polygon>
+                <polygon id="Triangle-3" fill="#FFF3CB" transform="translate(91.982123, 202.376609) rotate(140.000000) translate(-91.982123, -202.376609) " points="56.1185344 168.858891 118.731412 243.589257 127.845712 161.163961"></polygon>
+                <polygon id="Triangle-3" fill="#FFDD63" transform="translate(187.648863, 90.616899) rotate(-53.000000) translate(-187.648863, -90.616899) " points="134.026748 35.0492865 241.270978 54.4058156 162.679178 146.184512"></polygon>
+                <polygon id="Triangle-3" fill="#FFEDAC" transform="translate(112.700659, 170.148822) rotate(-53.000000) translate(-112.700659, -170.148822) " points="57.7008005 126.823779 167.700517 126.574001 101.898239 213.723643"></polygon>
+                <polygon id="Triangle-3" fill="#FFDD63" transform="translate(148.569878, 267.401001) rotate(-53.000000) translate(-148.569878, -267.401001) " points="102.691884 242.40861 193.849867 223.801568 194.447872 311.000435"></polygon>
+                <polygon id="Triangle-3" fill="#FFDD63" transform="translate(214.000000, 200.500000) rotate(-53.000000) translate(-214.000000, -200.500000) " points="167.071649 232.106642 260.928351 168.893358 249.86099 227.318639"></polygon>
+                <polygon id="Triangle-3" fill="#FFDD63" transform="translate(55.981655, 127.407987) rotate(-53.000000) translate(-55.981655, -127.407987) " points="0.981796369 155.102831 84.4562375 99.713142 110.981513 154.853053"></polygon>
+                <polygon id="Triangle-3" fill="#FEE382" transform="translate(254.000000, 138.000000) rotate(-53.000000) translate(-254.000000, -138.000000) " points="226.941031 112.061376 292.12633 105.513342 215.87367 170.486658"></polygon>
+                <polygon id="Triangle-3" fill="#FEF1C0" transform="translate(146.320889, 50.144248) rotate(160.000000) translate(-146.320889, -50.144248) " points="96.0784387 57.5512633 196.563339 15.3756208 171.253848 84.9128748"></polygon>
+            </g>
+        </g>
+
+  <!-- Continuous glass sweep across the facets (userSpace gradient):
+       bright curved light top-left, faint amber shade bottom-right -->
+  <g transform="translate(316.9,182.6) scale(1.8402) translate(-51,-27)">
+            <g id="Group-5" transform="translate(107.000000, 290.000000)">
+                <path d="M24.7524752,43 L22.7722772,72 L24.7524752,43 Z" id="Triangle-3" fill="url(#glassSweep)"></path>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="0 62 25 41 50 82"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="0 0 0 62 25 41"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="75 41 50 82 100 62"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="100 62 75 41 100 0"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="0 0 100 0 50 82"></polygon>
+            </g>
+            <g id="Group" transform="translate(6.000000, 1.000000)">
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="111 100 217 144 141 205"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="191 26 251 88 217 144"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="101 289 211 257 201 289"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="91 257 141 205 101 289"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="51 88 111 26 111 100"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" points="141 205 211 257 217 144"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(91.982123, 202.376609) rotate(140.000000) translate(-91.982123, -202.376609) " points="56.1185344 168.858891 118.731412 243.589257 127.845712 161.163961"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(187.648863, 90.616899) rotate(-53.000000) translate(-187.648863, -90.616899) " points="134.026748 35.0492865 241.270978 54.4058156 162.679178 146.184512"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(112.700659, 170.148822) rotate(-53.000000) translate(-112.700659, -170.148822) " points="57.7008005 126.823779 167.700517 126.574001 101.898239 213.723643"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(148.569878, 267.401001) rotate(-53.000000) translate(-148.569878, -267.401001) " points="102.691884 242.40861 193.849867 223.801568 194.447872 311.000435"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(214.000000, 200.500000) rotate(-53.000000) translate(-214.000000, -200.500000) " points="167.071649 232.106642 260.928351 168.893358 249.86099 227.318639"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(55.981655, 127.407987) rotate(-53.000000) translate(-55.981655, -127.407987) " points="0.981796369 155.102831 84.4562375 99.713142 110.981513 154.853053"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(254.000000, 138.000000) rotate(-53.000000) translate(-254.000000, -138.000000) " points="226.941031 112.061376 292.12633 105.513342 215.87367 170.486658"></polygon>
+                <polygon id="Triangle-3" fill="url(#glassSweep)" transform="translate(146.320889, 50.144248) rotate(160.000000) translate(-146.320889, -50.144248) " points="96.0784387 57.5512633 196.563339 15.3756208 171.253848 84.9128748"></polygon>
+            </g>
+        </g>
+
+  <!-- Top sheen with curved falloff -->
+  <ellipse cx="512.0" cy="-451" rx="973" ry="819" fill="url(#sheenFill)"/>
+
+  <rect width="1024" height="1024" fill="url(#vig)"/>
+</svg>

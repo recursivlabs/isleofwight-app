@@ -1,0 +1,57 @@
+name: Verify released tasks
+
+# The second party the controller requires (docs/goal-prompt.md §1.3): a worker
+# releases a dispatcher row with PR evidence; something else re-fetches that
+# evidence and closes the row. Bill's loop runs under one login and may not
+# countersign itself, so released rows piled up (67 on 2026-08-26) and the
+# ladder counter could not move. This job runs scripts/verify-released-tasks.mjs
+# twice a day: merged PR, merge on main, live commit contains it, then claim
+# as `verifier-ci` and mark done with the evidence in the notes.
+#
+# Needs one secret: MINDS_NETWORK_API_KEY (an org-scoped Recursiv API key for
+# the Minds org). Without it the script exits 1 and this run is red on purpose.
+
+on:
+  schedule:
+    - cron: '30 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print what would be completed without claiming or closing anything"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  # The fallback GITHUB_TOKEN reads PRs only with this; without it the pulls
+  # API answered 403 on the first live dry run (run 33028900276).
+  pull-requests: read
+
+concurrency:
+  group: verify-released
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MINDS_NETWORK_API_KEY: ${{ secrets.MINDS_NETWORK_API_KEY }}
+      # Reading a PR needs a token with Pull requests: Read on BOTH repos.
+      # ENGINE_REPO_TOKEN is the secret this repo's other workflows already
+      # define for engine reads, so it comes first. ADMIN_GH_TOKEN answered
+      # "Resource not accessible by personal access token" on every PR in run
+      # 33030409458 (a fine-grained PAT without the pull-requests permission);
+      # it stays as a fallback in case its permissions are widened. The default
+      # token reads this repo's PRs only, never the private engine repo.
+      GH_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN || secrets.ADMIN_GH_TOKEN || secrets.GITHUB_TOKEN }}
+      VERIFY_DRY_RUN: ${{ github.event.inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Self-test the verifier
+        run: node scripts/verify-released-tasks.test.mjs
+      - name: Verify released rows and close the ones whose evidence holds
+        run: node scripts/verify-released-tasks.mjs

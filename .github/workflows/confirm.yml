@@ -1,0 +1,121 @@
+name: Confirm artifacts
+
+# The CI second party — §1.0's two conditions, §1.3, §5.47.
+#
+# (a) The comment it posts must RE-EXECUTE each sub-artifact's own exit command
+#     inside this run, with the run_id in the body. A restatement is not a
+#     confirmation. scripts/confirm-artifacts.sh does exactly that and prints
+#     the output the run produced.
+# (b) This workflow must be a REQUIRED check under P2a, so the loop cannot
+#     delete or disable the witness judging it.
+#
+# Both are required or `github-actions` does NOT count as a second party. The
+# comment states condition (b) with the live protection API response inside it,
+# so a reader can falsify the claim without trusting this file.
+#
+# NO `paths:` filter, and it runs on pull_request too — a required check that
+# does not report on some PRs is "expected" forever and deadlocks the repo
+# (learned the hard way on the controller gate, #237). On a PR it VERIFIES and
+# prints; it only POSTS on main, because a countersignature belongs to a landed
+# artifact, not to a proposal.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '41 6 * * *' # daily, after loop-audit's 07:17 predecessor lands
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+  # P2b.5/P2b.6 re-fetch pull-request state and comments through `gh api`.
+  # Without this explicit permission the required verifier receives 403 for
+  # every PR, so completed work remains permanently stuck awaiting a human.
+  pull-requests: read
+
+concurrency:
+  group: confirm-artifacts
+  cancel-in-progress: false
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HAS_ENGINE_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # PS.1 and PS.4 read the engine repo, which is private. Without a token
+      # they SKIP loudly — and a skip is never a pass (the script enforces it).
+      - name: Check out the engine repo (optional — enables PS.1 / PS.4)
+        if: env.HAS_ENGINE_TOKEN == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: recursivlabs/recursiv
+          token: ${{ secrets.ENGINE_REPO_TOKEN }}
+          path: .engine
+          fetch-depth: 0
+
+      # BEFORE the real run, prove the second party still behaves as claimed.
+      # It decides what CONFIRMED counts, and CONFIRMED is what the controller
+      # steers by, so a defect here is invisible in exactly the way that matters.
+      # Five such defects landed in one session and every one was found by hand.
+      # It runs first deliberately: if the checker is broken, its verdict on the
+      # artifacts is not worth reading.
+      - name: Self-test the second party
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENGINE: ${{ github.workspace }}/.engine
+        run: bash scripts/confirm-selftest.sh
+
+      # Most exits use shell/GitHub primitives, but P4.2 imports the same
+      # published SDK as the app. A checkout without dependencies made that
+      # live proof fail with ERR_MODULE_NOT_FOUND while the report-only
+      # confirmer itself stayed green. Install only after the verifier proves
+      # its own predicates, so a broken second party still fails early.
+      - name: Install artifact-command dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Re-execute the exit artifacts
+        env:
+          # ADMIN_GH_TOKEN, when the repo admin adds it, lets the second party
+          # read the classic branch-protection REST API (admin scope on both
+          # repos) so P2a.1 confirms instead of skipping and lets P2c.3 read the
+          # repository-local contexts through a narrower GraphQL projection.
+          # Absent, the default token cannot read either protection surface;
+          # both guards skip — CANNOT-VERIFY, not NOT-TRUE (proved in PR run
+          # 31423469093).
+          # Keep the ordinary repository token for run, issue and pull-request
+          # evidence. The verifier switches to ADMIN_GH_TOKEN only around the
+          # two branch-protection reads that require it.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ADMIN_GH_TOKEN: ${{ secrets.ADMIN_GH_TOKEN }}
+          ENGINE: ${{ github.workspace }}/.engine
+          # P4.2's second party independently signs into staging, mints a
+          # one-use key, fetches the configured org, and revokes the key.
+          STAGING_QA_EMAIL: ${{ secrets.STAGING_QA_EMAIL }}
+          STAGING_QA_PASSWORD: ${{ secrets.STAGING_QA_PASSWORD }}
+          STAGING_ORG_ID: ${{ secrets.STAGING_ORG_ID }}
+          STAGING_PROJECT_ID: 019fd8e0-e4e9-703a-b259-8cbb8519d9cb
+          STAGING_BASE_URL: https://api.staging.recursiv.io/api/v1
+          # Live P4.2 proof belongs to landed artifacts. Re-running it on every
+          # same-repo PR push exhausted staging's intentional per-account auth
+          # throttle before the independent main countersignature could run.
+          P42_LIVE_VERIFY: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+          # Post only from main. On a PR the same verification runs and its
+          # result gates the check, but nothing is countersigned — an artifact
+          # that has not landed cannot be confirmed to exist.
+          POST: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+        run: bash scripts/confirm-artifacts.sh

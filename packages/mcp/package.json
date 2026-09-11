@@ -1,0 +1,59 @@
+{
+  "name": "@minds/mcp",
+  "version": "0.0.6",
+  "description": "MCP server for the Minds platform — built on Recursiv",
+  "license": "FSL-1.1-ALv2",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "minds-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "pnpm build && node ../../scripts/verify-package-contents.mjs .",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ../../vitest.packages.config.ts --passWithNoTests"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@recursiv/mcp": "0.5.1",
+    "@recursiv/sdk": "0.7.6",
+    "dotenv": "^16.6.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.13",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/recursivlabs/minds.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/recursivlabs/minds/issues"
+  },
+  "homepage": "https://github.com/recursivlabs/minds/tree/main/packages/mcp#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "sideEffects": [
+    "./dist/env-setup.js",
+    "./src/env-setup.ts",
+    "./dist/index.js",
+    "./src/index.ts"
+  ]
+}

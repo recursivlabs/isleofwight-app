@@ -1,0 +1,60 @@
+name: Publish Minds packages
+
+on:
+  push:
+    tags:
+      - 'minds-v*.*.*'
+
+jobs:
+  npm-publish:
+    name: Build and publish @minds packages to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+      - name: Require a release commit from main
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || {
+            echo "::error::Release tags must point to a commit already on main."
+            exit 1
+          }
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build and verify packages
+        run: |
+          pnpm packages:build
+          pnpm packages:pack
+      - name: Publish packages in dependency order
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+        run: |
+          set -euo pipefail
+          publish_args=(--access public --no-git-checks)
+          if [ "$REPOSITORY_VISIBILITY" = "public" ]; then
+            publish_args+=(--provenance)
+          else
+            echo "publishing without provenance because npm only accepts GitHub provenance from public repositories"
+          fi
+          for dir in sdk api tenant-overlay mcp cli; do
+            name=$(jq -r .name "packages/$dir/package.json")
+            version=$(jq -r .version "packages/$dir/package.json")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "skip $name@$version — already published"
+              continue
+            fi
+            echo "publishing $name@$version"
+            pnpm publish "packages/$dir" "${publish_args[@]}"
+          done
