@@ -443,14 +443,22 @@ export default function CommunityDetailScreen() {
                 <Button
                   onPress={async () => {
                     if (!sdk) return;
+                    let convId: string | null = null;
                     try {
                       const res: any = await sdk.chat.communityConversation(community.id);
-                      const convId = res?.data?.id || res?.id;
-                      if (!convId) throw new Error('no room');
-                      router.push(chatConversationHref(convId) as any);
-                    } catch {
-                      showToast('Chat is not ready for this group yet', 'error');
+                      convId = res?.data?.id || res?.id || null;
+                    } catch {}
+                    if (!convId) {
+                      // The room is in the member's chat list even when the
+                      // direct lookup is refused; find it there.
+                      try {
+                        const list: any = await sdk.chat.conversations({ limit: 100 } as any);
+                        const hit = (list?.data || []).find((c: any) => (c.community_id || c.communityId) === community.id);
+                        convId = hit?.id || null;
+                      } catch {}
                     }
+                    if (convId) router.push(chatConversationHref(convId) as any);
+                    else showToast('Chat is not ready for this group yet', 'error');
                   }}
                   variant="secondary"
                   size="sm"

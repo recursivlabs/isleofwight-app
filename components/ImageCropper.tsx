@@ -52,7 +52,8 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
       (w, h) => {
         setNatural({ w, h });
         // Guard: block sources that can't fill the output without upscaling badly.
-        setTooSmall(w < spec.outWidth || h < spec.outHeight);
+        // Accept anything at least 40% of the output size; the crop upscales.
+        setTooSmall(w < Math.round(spec.outWidth * 0.4) || h < Math.round(spec.outHeight * 0.4));
       },
       () => setNatural(null),
     );
