@@ -147,7 +147,9 @@ export function computeTrends(posts: any[], limit = 4): Trend[] {
 
   return [...buckets.values()]
     // ≥2 distinct people = a conversation, not one account.
-    .filter((b) => b.authors.size >= 2)
+    // Two people, or one voice on the same topic twice: a young app's news
+    // account must be able to light this up alone.
+    .filter((b) => b.authors.size >= 2 || b.posts.size >= 2)
     .map((b) => {
       // Fresher topics rank higher; decays over ~3 days.
       const recencyBoost = 1 + Math.max(0, 1 - (now - b.recent) / (3 * 864e5));

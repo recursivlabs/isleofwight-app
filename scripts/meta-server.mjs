@@ -647,7 +647,7 @@ export function injectPage(html, meta) {
   const title = clamp(meta.title || DEFAULT_TITLE, 90);
   const description = clamp(meta.description || DEFAULT_DESCRIPTION, 220);
   const url = meta.url || SITE_ORIGIN;
-  const noScript = `<noscript><main><h1>${esc(title)}</h1><p>${esc(description)}</p><p><a href="${esc(url)}">Open on Minds</a></p></main></noscript>`;
+  const noScript = `<noscript><main><h1>${esc(title)}</h1><p>${esc(description)}</p><p><a href="${esc(url)}">Open on Wight.social</a></p></main></noscript>`;
   html = html.replace(/<noscript>[\s\S]*?<\/noscript>/, noScript);
   if (META_BLOCK_RE.test(html)) return html.replace(META_BLOCK_RE, block);
   // Older dist without the marker block (built before inject-boot-shell wrote
