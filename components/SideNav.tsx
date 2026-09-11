@@ -37,9 +37,9 @@ const NAV_ITEMS: NavItem[] = [
   // Minds AI — the user's AI on Minds. Clean single-prompt page (/ai); links out
   // to the paywalled build surface. ("Minds AI" is a placeholder brand for now.)
   // Sits third, above Chat: it is a headline surface, not a utility.
-  { name: 'chat', label: 'Chat', icon: 'chatbubble-outline', activeIcon: 'chatbubble' },
+  { name: 'chat', label: 'Messages', icon: 'chatbubble-outline', activeIcon: 'chatbubble' },
   { name: 'notifications', label: 'Notifications', icon: 'notifications-outline', activeIcon: 'notifications' },
-  { name: 'groups', label: 'Groups', icon: 'people-outline', activeIcon: 'people' },
+  { name: 'groups', label: 'Communities', icon: 'people-outline', activeIcon: 'people' },
   { name: 'bookmarks', label: 'Bookmarks', icon: 'bookmark-outline', activeIcon: 'bookmark' },
 ];
 
@@ -289,7 +289,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
               onPress={() => router.push('/(tabs)')}
               hitSlop={8}
               accessibilityRole="link"
-              accessibilityLabel="Isle of Wight Social home"
+              accessibilityLabel="Wight.social home"
             >
               {collapsed ? (
                 // Bulb mark only (matches the favicon). The source is a square
@@ -299,7 +299,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? BULB_DARK : BULB}
                   style={{ width: 40, height: 40 }}
                   contentFit="contain"
-                  accessibilityLabel="Isle of Wight Social"
+                  accessibilityLabel="Wight.social"
                 />
               ) : (
                 // Expanded: full Minds wordmark logo, matched to the theme.
@@ -308,7 +308,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? LOGO_DARK : LOGO_LIGHT}
                   style={{ width: 210, height: 50 }}
                   contentFit="contain"
-                  accessibilityLabel="Isle of Wight Social"
+                  accessibilityLabel="Wight.social"
                 />
               )}
             </Pressable>

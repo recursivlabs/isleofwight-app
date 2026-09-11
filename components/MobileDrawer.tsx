@@ -43,7 +43,7 @@ type DrawerItem = { icon: string; label: string; route: string; adminOnly?: bool
 
 const MAIN_ITEMS: DrawerItem[] = [
   { icon: 'person-outline', label: 'Profile', route: 'profile' },
-  { icon: 'people-outline', label: 'Groups', route: '/groups' },
+  { icon: 'people-outline', label: 'Communities', route: '/groups' },
   { icon: 'gift-outline', label: 'Invites', route: '/invites' },
   { icon: 'shield-outline', label: 'Admin', route: '/admin', adminOnly: true },
 ];

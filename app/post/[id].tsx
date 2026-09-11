@@ -49,7 +49,7 @@ export default function PostDetailScreen() {
   const postAuthor =
     post?.author?.name || post?.author?.username || post?.user?.name || post?.user?.username;
   usePageTitle(
-    post ? (postTitle(post) || (postAuthor ? `${postAuthor} on Isle of Wight Social` : 'Post — Isle of Wight Social')) : null,
+    post ? (postTitle(post) || (postAuthor ? `${postAuthor} on Wight.social` : 'Post — Wight.social')) : null,
   );
   // "More like this" — semantically related posts so the page never dead-ends.
   const { posts: similar, loading: similarLoading } = useSimilarPosts(id, 10);

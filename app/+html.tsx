@@ -8,7 +8,7 @@ import { ScrollViewStyleReset } from 'expo-router/html';
 const SITE_ORIGIN = 'https://isleofwight.on.minds.io'; // minds.com = legacy until cutover
 const OG_IMAGE = `${SITE_ORIGIN}/og-invite.png`; // 1200x630, served from /public
 const OG_TITLE = 'Join me on Isle of Wight';
-const OG_DESCRIPTION = 'Local news, events, groups and chat for the Isle of Wight.'; // no em dashes in descriptions
+const OG_DESCRIPTION = 'People, places, community. A digital home for the Isle of Wight.'; // no em dashes in descriptions
 
 export default function Root({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +17,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Isle of Wight Social</title>
+        <title>Wight.social</title>
         <meta name="description" content={OG_DESCRIPTION} />
         <link rel="icon" href="/favicon.ico" />
 
@@ -31,7 +31,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
 
         {/* Open Graph — Signal, iMessage, Slack, Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Isle of Wight Social" />
+        <meta property="og:site_name" content="Wight.social" />
         <meta property="og:title" content={OG_TITLE} />
         <meta property="og:description" content={OG_DESCRIPTION} />
         <meta property="og:url" content={SITE_ORIGIN} />

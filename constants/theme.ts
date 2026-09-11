@@ -94,9 +94,9 @@ export interface ColorTokens {
 export const SPLASH_BG = '#010100';
 
 export const darkColors: ColorTokens = {
-  bg: '#010100',
-  surface: '#181818',
-  surfaceRaised: '#1e1e1e',
+  bg: '#0b1e2d',
+  surface: '#122a3d',
+  surfaceRaised: '#173349',
   surfaceHover: 'rgba(255,255,255,0.06)',
 
   glass: 'rgba(255,255,255,0.04)',
@@ -104,22 +104,22 @@ export const darkColors: ColorTokens = {
 
   border: 'rgba(255,255,255,0.12)',
   borderSubtle: 'rgba(255,255,255,0.08)',
-  borderFocus: '#1f5fa8',
+  borderFocus: '#0ea5e9',
 
   // Match legacy Minds: solid #f2f2f2 (grey-50), NOT dimmed white. The old
   // rgba(...,0.95) read grey over the near-black bg -- the exact "text is greyer
   // than minds.com" complaint. Secondary/muted follow legacy grey-300/500.
-  text: '#f2f2f2',
-  textSecondary: '#b9bbc0',
-  textMuted: '#8a8e96',
-  textInverse: '#010100',
-  textOnAccent: '#010100',
+  text: '#f2f5f7',
+  textSecondary: '#b7c2cc',
+  textMuted: '#8a97a3',
+  textInverse: '#0b1e2d',
+  textOnAccent: '#0b1e2d',
 
   // Legacy Minds gold (yellow-500 #ffd048), brighter than the old #d4a844.
-  accent: '#8ec5ff',
-  accentHover: '#a9d3ff',
-  accentMuted: 'rgba(142,197,255,0.12)',
-  accentSubtle: 'rgba(142,197,255,0.06)',
+  accent: '#38bdf8',
+  accentHover: '#7dd3fc',
+  accentMuted: 'rgba(56,189,248,0.14)',
+  accentSubtle: 'rgba(56,189,248,0.07)',
 
   success: '#34d399',
   successMuted: 'rgba(52,211,153,0.10)',
@@ -148,7 +148,7 @@ export const darkColors: ColorTokens = {
 export const lightColors: ColorTokens = {
   // Pure white canvas to match X and legacy minds.com; separation comes from
   // borders (sidebar widgets are outline-only, not filled).
-  bg: '#ffffff',
+  bg: '#f4f6f8',
   surface: '#ffffff',
   surfaceRaised: '#ffffff',
   surfaceHover: 'rgba(0,0,0,0.055)',
@@ -157,25 +157,25 @@ export const lightColors: ColorTokens = {
   glassBorder: 'rgba(0,0,0,0.12)',
 
   // Legacy border greys (m-borderColor primary/tertiary).
-  border: '#d3dbe3',
-  borderSubtle: '#ececec',
-  borderFocus: '#b8860b',
+  border: '#dfe5ec',
+  borderSubtle: '#e9eef3',
+  borderFocus: '#0ea5e9',
 
   // Legacy Minds light text: softer than near-black (m-textColor
   // primary/secondary/tertiary), which reads easier than #0a0a0a.
-  text: '#43434d',
-  textSecondary: '#72727c',
-  textMuted: '#9b9b9b',
+  text: '#1f2937',
+  textSecondary: '#475569',
+  textMuted: '#64748b',
   textInverse: '#ffffff',
   textOnAccent: '#ffffff',
 
   // Minds DARK GOLD in light mode — the brand gold deepened so it reads gold,
   // not orange (the amber-600 before this leaned orange). Dark mode keeps the
   // brighter gold #ffd048. Primary actions layer a gold gradient on web.
-  accent: '#1f5fa8',
-  accentHover: '#174b86',
-  accentMuted: 'rgba(31,95,168,0.14)',
-  accentSubtle: 'rgba(31,95,168,0.07)',
+  accent: '#0ea5e9',
+  accentHover: '#0b8fcb',
+  accentMuted: 'rgba(14,165,233,0.14)',
+  accentSubtle: 'rgba(14,165,233,0.07)',
 
   success: '#047857',
   successMuted: 'rgba(4,120,87,0.10)',
@@ -216,12 +216,12 @@ export const colors: ColorTokens = { ...darkColors };
  * themes. Web gets the gradient + shadow; native falls back to the solid.
  */
 export const CTA = {
-  gradient: 'linear-gradient(180deg, #3b7dd8 0%, #1f5fa8 100%)',
-  gradientHover: 'linear-gradient(180deg, #4f8ee2 0%, #2a6bb8 100%)',
-  solid: '#1f5fa8',
+  gradient: 'linear-gradient(180deg, #22b3f0 0%, #0ea5e9 100%)',
+  gradientHover: 'linear-gradient(180deg, #38bdf8 0%, #1aaeee 100%)',
+  solid: '#0ea5e9',
   ink: '#ffffff',
-  border: 'rgba(12,44,84,0.55)',
-  shadowWeb: '0 2px 10px rgba(31,95,168,0.32)',
+  border: 'rgba(3,74,105,0.5)',
+  shadowWeb: '0 2px 10px rgba(14,165,233,0.32)',
 } as const;
 
 export const spacing = {

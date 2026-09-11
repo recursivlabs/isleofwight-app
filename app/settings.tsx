@@ -942,7 +942,7 @@ export default function SettingsScreen() {
 
   const versionFooter = (
     <View style={{ alignItems: 'center', gap: 2, paddingTop: spacing.xl }}>
-      <Text variant="bodyMedium" color={colors.textSecondary}>Isle of Wight Social</Text>
+      <Text variant="bodyMedium" color={colors.textSecondary}>Wight.social</Text>
       <Text variant="caption" color={colors.textMuted}>Built on Recursiv · Powered by open source</Text>
       {/* Real native version + the OTA update actually RUNNING on this
           device. The short update id is the ground truth for "did my phone

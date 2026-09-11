@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { useAuth } from '../lib/auth';
 
-const LOGO_DARK = require('../assets/logo-light-mode.svg');
+const LOGO_DARK = require('../assets/lockup-light.svg');
 // The same file expo-splash-screen draws, so the boot hold below is the splash.
 const SPLASH_MARK = require('../assets/splash.png');
 import { BASE_URL, SITE_URL } from '../lib/recursiv';
@@ -230,7 +230,7 @@ function AuthPolicyLinks() {
   );
   return (
     <View
-      accessibilityLabel="Isle of Wight Social policies"
+      accessibilityLabel="Wight.social policies"
       style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: spacing.xl, maxWidth: 360 }}
     >
       <Text variant="caption" color={colors.textMuted}>By signing in you agree to the</Text>
@@ -388,7 +388,7 @@ export default function LandingScreen() {
   if (isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: '#08080a', alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Isle of Wight Social" />
+        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Wight.social" />
       </View>
     );
   }
@@ -1194,12 +1194,12 @@ export default function LandingScreen() {
           <Image
             source={LOGO_DARK}
             style={{
-              width: isMobile ? 260 : 340,
-              height: isMobile ? 62 : 81,
+              width: isMobile ? 280 : 360,
+              height: isMobile ? 86 : 110,
               marginBottom: isMobile ? spacing.lg : spacing['3xl'],
             }}
             contentFit="contain"
-            accessibilityLabel="Isle of Wight Social"
+            accessibilityLabel="Wight.social"
             onLoad={revealHero}
             onError={revealHero}
           />
