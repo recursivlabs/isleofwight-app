@@ -43,7 +43,7 @@
     "test": "vitest run --config ../../vitest.packages.config.ts --passWithNoTests"
   },
   "dependencies": {
-    "@recursiv/sdk": "0.7.15"
+    "@recursiv/sdk": "0.7.14"
   },
   "devDependencies": {
     "typescript": "~5.9.2",
