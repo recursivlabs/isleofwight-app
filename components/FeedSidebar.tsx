@@ -351,7 +351,7 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
   const sections: Record<string, React.ReactNode> = {
     whatsHappening: trends.length >= 2 ? (
       <SidebarSection
-        title="Trending on Wight.social"
+        title="Trending on Isle of Wight Social"
         icon="pulse-outline"
         onSeeAll={() => router.push('/(tabs)/discover' as any)}
       >

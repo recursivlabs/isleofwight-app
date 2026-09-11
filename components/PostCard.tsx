@@ -1482,7 +1482,7 @@ export const PostCard = React.memo(function PostCard({
                     try {
                       if (Platform.OS === 'web' && typeof navigator !== 'undefined') {
                         if (navigator.share) {
-                          await navigator.share({ title: post.title || 'Post on Wight.social', url });
+                          await navigator.share({ title: post.title || 'Post on Isle of Wight Social', url });
                         } else if (navigator.clipboard) {
                           await navigator.clipboard.writeText(url);
                           toast.show('Link copied');

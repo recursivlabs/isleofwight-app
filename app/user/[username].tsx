@@ -83,7 +83,7 @@ export default function UserProfileScreen() {
   const { profile, loading, error, isFollowing, setIsFollowing, refresh: refreshProfile } = useProfile(username);
   usePageTitle(
     profile
-      ? `${profile.name || profile.username || username} (@${profile.username || username}) — Wight.social`
+      ? `${profile.name || profile.username || username} (@${profile.username || username}) — Isle of Wight Social`
       : null,
   );
   const { refresh: refreshMyProfile } = useMyProfile();

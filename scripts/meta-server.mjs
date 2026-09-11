@@ -63,8 +63,8 @@ const ANDROID_CERT_FINGERPRINTS = configuredAndroidFingerprints.length
   ? [...new Set(configuredAndroidFingerprints)]
   : [DEFAULT_ANDROID_CERT_FINGERPRINT];
 
-const SITE_NAME = 'Wight.social';
-const DEFAULT_TITLE = 'Wight.social';
+const SITE_NAME = 'Isle of Wight Social';
+const DEFAULT_TITLE = 'Isle of Wight Social';
 // Em dashes are allowed in the TITLE only, never in descriptions (brand rule).
 const DEFAULT_DESCRIPTION = 'People, places, community. A digital home for the Isle of Wight.';
 const DEFAULT_IMAGE = `${SITE_ORIGIN}/og-default.png`;
@@ -647,7 +647,7 @@ export function injectPage(html, meta) {
   const title = clamp(meta.title || DEFAULT_TITLE, 90);
   const description = clamp(meta.description || DEFAULT_DESCRIPTION, 220);
   const url = meta.url || SITE_ORIGIN;
-  const noScript = `<noscript><main><h1>${esc(title)}</h1><p>${esc(description)}</p><p><a href="${esc(url)}">Open on Wight.social</a></p></main></noscript>`;
+  const noScript = `<noscript><main><h1>${esc(title)}</h1><p>${esc(description)}</p><p><a href="${esc(url)}">Open on Isle of Wight Social</a></p></main></noscript>`;
   html = html.replace(/<noscript>[\s\S]*?<\/noscript>/, noScript);
   if (META_BLOCK_RE.test(html)) return html.replace(META_BLOCK_RE, block);
   // Older dist without the marker block (built before inject-boot-shell wrote

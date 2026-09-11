@@ -35,7 +35,7 @@ export default function CommunityDetailScreen() {
   const cachedCommunity = getCached(`community:${id}`);
   const cachedPosts = getCached(`community-posts:${id}`);
   const [community, setCommunity] = React.useState<any>(cachedCommunity || null);
-  usePageTitle(community?.name ? `${community.name} — Wight.social` : null);
+  usePageTitle(community?.name ? `${community.name} — Isle of Wight Social` : null);
   const [posts, setPosts] = React.useState<any[]>(cachedPosts || []);
   const [loading, setLoading] = React.useState(!cachedCommunity);
   const [communityLoadError, setCommunityLoadError] = React.useState<'not_found' | 'temporary' | null>(null);

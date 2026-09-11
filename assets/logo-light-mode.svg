@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="310px" height="74px" viewBox="0 0 310 74" xmlns="http://www.w3.org/2000/svg">
-  <title>Wight.social</title>
-  <text x="4" y="52" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="40" letter-spacing="-1.5" fill="#0b1e2d"><tspan font-weight="800">WIGHT</tspan><tspan fill="#0ea5e9" font-weight="800">.</tspan><tspan font-weight="400" letter-spacing="-0.5">social</tspan></text>
+<svg width="340px" height="74px" viewBox="0 0 340 74" xmlns="http://www.w3.org/2000/svg">
+  <title>Isle of Wight Social</title>
+  <circle cx="12" cy="40" r="7" fill="#0ea5e9"/>
+  <text x="26" y="50" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="31" letter-spacing="-1" fill="#0b1e2d"><tspan font-weight="800">Isle of Wight</tspan><tspan font-weight="400"> Social</tspan></text>
 </svg>

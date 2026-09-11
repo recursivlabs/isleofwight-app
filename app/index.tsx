@@ -230,7 +230,7 @@ function AuthPolicyLinks() {
   );
   return (
     <View
-      accessibilityLabel="Wight.social policies"
+      accessibilityLabel="Isle of Wight Social policies"
       style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: spacing.xl, maxWidth: 360 }}
     >
       <Text variant="caption" color={colors.textMuted}>By signing in you agree to the</Text>
@@ -388,7 +388,7 @@ export default function LandingScreen() {
   if (isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: '#08080a', alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Wight.social" />
+        <Image source={SPLASH_MARK} style={{ width: 200, height: 200 }} contentFit="contain" accessibilityLabel="Isle of Wight Social" />
       </View>
     );
   }
@@ -1199,7 +1199,7 @@ export default function LandingScreen() {
               marginBottom: 0,
             }}
             contentFit="contain"
-            accessibilityLabel="Wight.social"
+            accessibilityLabel="Isle of Wight Social"
             onLoad={revealHero}
             onError={revealHero}
           />

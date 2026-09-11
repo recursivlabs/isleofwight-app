@@ -51,7 +51,7 @@ let html = readFileSync(file, 'utf8');
 // minds.com serves LEGACY Minds until the cutover — default to the domain the
 // new app answers on. At cutover set EXPO_PUBLIC_SITE_URL=https://www.minds.com.
 const SITE_ORIGIN = (process.env.EXPO_PUBLIC_SITE_URL || 'https://isleofwight.on.minds.io').replace(/\/+$/, '');
-const META_TITLE = 'Wight.social';
+const META_TITLE = 'Isle of Wight Social';
 // Em dashes are allowed in the TITLE only, never in descriptions (brand rule).
 const META_DESCRIPTION = 'People, places, community. A digital home for the Isle of Wight.';
 const META_BLOCK = `<!--minds-meta-->
@@ -59,7 +59,7 @@ const META_BLOCK = `<!--minds-meta-->
     <meta name="description" content="${META_DESCRIPTION}" />
     <link rel="canonical" href="${SITE_ORIGIN}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Wight.social" />
+    <meta property="og:site_name" content="Isle of Wight Social" />
     <meta property="og:title" content="${META_TITLE}" />
     <meta property="og:description" content="${META_DESCRIPTION}" />
     <meta property="og:url" content="${SITE_ORIGIN}" />
@@ -94,7 +94,7 @@ const STYLE = `<style id="minds-boot-style">
    and changes sizes" glitch. */
 html{scrollbar-gutter:stable}
 #minds-boot{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;transition:opacity .35s ease;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
-#minds-boot .mb-wm{color:#0b1e2d;font-size:34px;font-weight:800;letter-spacing:-1.2px;margin-bottom:20px;opacity:.96;animation:mb-breathe 2.6s ease-in-out infinite}
+#minds-boot .mb-wm{color:#0b1e2d;font-size:30px;font-weight:800;letter-spacing:-.8px;margin-bottom:20px;opacity:.96;animation:mb-breathe 2.6s ease-in-out infinite}
 /* A slim indeterminate bar, not a spinner. A spinning ring reads as "stuck";
    a travelling highlight reads as "arriving", and it sits still enough to feel
    calm on a fast connection where it only shows for a few frames. */
@@ -107,7 +107,7 @@ html{scrollbar-gutter:stable}
 @media (prefers-reduced-motion:reduce){#minds-boot .mb-wm{animation:none}#minds-boot .mb-sp::after{animation:none;width:45%}}
 </style>`;
 
-const SHELL = `<div id="minds-boot" aria-hidden="true"><div class="mb-wm">WIGHT<span style="color:#0ea5e9">.</span><span style="font-weight:400">social</span></div><div class="mb-sp"></div></div>`;
+const SHELL = `<div id="minds-boot" aria-hidden="true"><div class="mb-wm">Isle of Wight <span style="font-weight:400">Social</span></div><div class="mb-sp"></div></div>`;
 
 const FAILSAFE = `<script>setTimeout(function(){var b=document.getElementById('minds-boot');if(b){b.style.opacity='0';setTimeout(function(){b.parentNode&&b.parentNode.removeChild(b)},400)}},20000)</script>`;
 

@@ -113,7 +113,7 @@ export default function PickUsernameScreen() {
         <View style={{ alignItems: 'center', gap: spacing.md }}>
           <Text variant="h2" color={colors.text} align="center">Pick your username</Text>
           <Text variant="body" color={colors.textSecondary} align="center" style={{ maxWidth: 320, lineHeight: 22 }}>
-            This is how people find you on Wight.social. You can change it later.
+            This is how people find you on Isle of Wight Social. You can change it later.
           </Text>
         </View>
 

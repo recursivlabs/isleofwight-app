@@ -25,7 +25,7 @@ export function SignedOutFeed({ returnTo }: { returnTo?: string }) {
   const header = (
     <View style={{ paddingHorizontal: spacing.xl, paddingTop: spacing.lg, paddingBottom: spacing.md, gap: spacing.sm }}>
       <View style={{ backgroundColor: colors.surface, borderWidth: 0.5, borderColor: colors.borderSubtle, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm }}>
-        <Text variant="h3" color={colors.text}>You are looking at Wight.social</Text>
+        <Text variant="h3" color={colors.text}>You are looking at Isle of Wight Social</Text>
         <Text variant="body" color={colors.textSecondary}>
           The newest public posts, live. Sign in to vote, reply, remind, follow people and join groups.
         </Text>

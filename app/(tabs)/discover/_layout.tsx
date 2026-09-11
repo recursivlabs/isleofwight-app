@@ -136,7 +136,7 @@ export default function DiscoverLayout() {
   };
 
   const placeholder =
-    isLanding ? 'Search Wight.social'
+    isLanding ? 'Search Isle of Wight Social'
     : activeKey === 'people' ? 'Search creators…'
     : activeKey === 'communities' ? 'Search communities…'
     : 'Search posts…';

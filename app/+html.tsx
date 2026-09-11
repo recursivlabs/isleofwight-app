@@ -17,7 +17,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Wight.social</title>
+        <title>Isle of Wight Social</title>
         <meta name="description" content={OG_DESCRIPTION} />
         <link rel="icon" href="/favicon.ico" />
 
@@ -31,7 +31,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
 
         {/* Open Graph — Signal, iMessage, Slack, Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Wight.social" />
+        <meta property="og:site_name" content="Isle of Wight Social" />
         <meta property="og:title" content={OG_TITLE} />
         <meta property="og:description" content={OG_DESCRIPTION} />
         <meta property="og:url" content={SITE_ORIGIN} />

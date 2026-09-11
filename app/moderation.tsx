@@ -93,7 +93,7 @@ function StatusPill({ status }: { status: string }) {
 
 export default function ModerationScreen() {
   const colors = useColors();
-  usePageTitle('Moderation & appeals — Wight.social');
+  usePageTitle('Moderation & appeals — Isle of Wight Social');
   const { sdk, user, accountRestriction, signOut } = useAuth();
   const publicSdk = React.useMemo(() => createPublicSdk(), []);
   const [principles, setPrinciples] = React.useState<Principle[]>([]);

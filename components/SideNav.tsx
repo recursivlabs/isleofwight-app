@@ -289,7 +289,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
               onPress={() => router.push('/(tabs)')}
               hitSlop={8}
               accessibilityRole="link"
-              accessibilityLabel="Wight.social home"
+              accessibilityLabel="Isle of Wight Social home"
             >
               {collapsed ? (
                 // Bulb mark only (matches the favicon). The source is a square
@@ -299,7 +299,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? BULB_DARK : BULB}
                   style={{ width: 40, height: 40 }}
                   contentFit="contain"
-                  accessibilityLabel="Wight.social"
+                  accessibilityLabel="Isle of Wight Social"
                 />
               ) : (
                 // Expanded: full Minds wordmark logo, matched to the theme.
@@ -308,7 +308,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? LOGO_DARK : LOGO_LIGHT}
                   style={{ width: 210, height: 50 }}
                   contentFit="contain"
-                  accessibilityLabel="Wight.social"
+                  accessibilityLabel="Isle of Wight Social"
                 />
               )}
             </Pressable>

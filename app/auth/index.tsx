@@ -170,7 +170,7 @@ export default function AuthBridgeScreen() {
         </Text>
 
         <Text variant="body" color={colors.textSecondary} style={{ marginBottom: spacing['2xl'] }}>
-          An application is asking to connect to your Wight.social account. Sign in to continue.
+          An application is asking to connect to your Isle of Wight Social account. Sign in to continue.
         </Text>
 
         {step !== 'code' && (

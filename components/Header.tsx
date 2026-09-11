@@ -122,7 +122,7 @@ export function Header({ showBack, title }: Props) {
           <Pressable
             hitSlop={10}
             accessibilityRole="link"
-            accessibilityLabel="Wight.social home"
+            accessibilityLabel="Isle of Wight Social home"
             onPress={() => {
               const onHome = pathname === '/' || pathname === '' || pathname === '/index';
               if (onHome) emitHomeScrollToTop();
@@ -135,7 +135,7 @@ export function Header({ showBack, title }: Props) {
               // Legacy Minds lockup is 2.6:1 (bulb + lowercase wordmark), so 32 tall = 83 wide.
               style={{ width: 140, height: 34 }}
               contentFit="contain"
-              accessibilityLabel="Wight.social, go home"
+              accessibilityLabel="Isle of Wight Social, go home"
             />
           </Pressable>
         </View>
