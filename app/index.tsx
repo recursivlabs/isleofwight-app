@@ -1182,7 +1182,7 @@ export default function LandingScreen() {
             screen was never the thing anyone came here to do. */}
 
         {/* Hero */}
-        <View style={{ alignItems: 'center', marginBottom: isMobile ? spacing['3xl'] : spacing['6xl'] }}>
+        <View style={{ alignItems: 'center', marginBottom: isMobile ? spacing.md : spacing.lg }}>
           {/* Full Minds wordmark logo (theme-matched), matching the logged-in
              logos. Bulb + lowercase wordmark, source ratio 3.24:1.
 
@@ -1195,8 +1195,8 @@ export default function LandingScreen() {
             source={LOGO_DARK}
             style={{
               width: isMobile ? 280 : 360,
-              height: isMobile ? 86 : 110,
-              marginBottom: isMobile ? spacing.lg : spacing['3xl'],
+              height: isMobile ? 78 : 100,
+              marginBottom: 0,
             }}
             contentFit="contain"
             accessibilityLabel="Wight.social"
