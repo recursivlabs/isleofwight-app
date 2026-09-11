@@ -165,6 +165,16 @@ export function usePosts(sort: 'score' | 'latest' | 'following' | 'personal' = '
       // the media URL (strips query string / trailing slash) so CDN variants of
       // the same image collapse — the old inline key matched the raw first-media
       // URL and let cache-busted dups (the "john Untitled" noise) slip through.
+      // A young app has no ranking signal yet, so the personal feed comes back
+      // empty. Show the app's newest posts instead of a blank page.
+      if (sort === 'personal' && data.length === 0 && baseOffset === 0) {
+        try {
+          const res: any = await fetchDeduped(`req:${cacheKey}:fallback`, () => s.posts.list({ limit } as any));
+          data = filterMuted(res.data || []);
+          more = false;
+        } catch {}
+      }
+
       data = dedupePosts(data);
 
       if (sort === 'score') {
