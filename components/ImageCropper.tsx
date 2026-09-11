@@ -38,6 +38,8 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
   const [natural, setNatural] = React.useState<{ w: number; h: number } | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [tooSmall, setTooSmall] = React.useState(false);
+  // Set when the browser cannot decode the file (HEIC from an iPhone, a PDF).
+  const [unreadable, setUnreadable] = React.useState(false);
 
   // The visible crop frame: full available width (with a gutter), height by aspect.
   const FRAME_W = Math.min(winW - spacing.xl * 2, 520);
@@ -45,7 +47,7 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
 
   // Natural size of the source (drives the cover-fit + crop math).
   React.useEffect(() => {
-    setNatural(null); setTooSmall(false);
+    setNatural(null); setTooSmall(false); setUnreadable(false);
     if (!uri) return;
     RNImage.getSize(
       uri,
@@ -55,7 +57,7 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
         // Accept anything at least 40% of the output size; the crop upscales.
         setTooSmall(w < Math.round(spec.outWidth * 0.4) || h < Math.round(spec.outHeight * 0.4));
       },
-      () => setNatural(null),
+      () => { setNatural(null); setUnreadable(true); },
     );
   }, [uri, spec.outWidth, spec.outHeight]);
 
@@ -141,8 +143,8 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
           <View style={{ position: 'absolute', top: 0, left: 0, right: 0, paddingTop: 56, paddingHorizontal: spacing.xl, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Pressable onPress={onCancel} hitSlop={12}><Text variant="body" color="#fff">Cancel</Text></Pressable>
             <Text variant="bodyMedium" color="#fff">{spec.label}</Text>
-            <Pressable onPress={doCrop} disabled={busy || tooSmall} hitSlop={12}>
-              <Text variant="bodyMedium" color={busy || tooSmall ? '#888' : colors.accent}>{busy ? '…' : 'Done'}</Text>
+            <Pressable onPress={doCrop} disabled={busy || tooSmall || unreadable} hitSlop={12}>
+              <Text variant="bodyMedium" color={busy || tooSmall || unreadable ? '#888' : colors.accent}>{busy ? '…' : 'Done'}</Text>
             </Pressable>
           </View>
 
@@ -157,7 +159,11 @@ export function ImageCropper({ uri, spec, onCancel, onDone }: Props) {
 
           {/* Hint / guard */}
           <View style={{ position: 'absolute', bottom: 64, paddingHorizontal: spacing.xl }}>
-            {tooSmall ? (
+            {unreadable ? (
+              <Text variant="caption" color="#ff6b6b" style={{ textAlign: 'center' }}>
+                This file could not be read. Use a JPG, PNG or WebP image.
+              </Text>
+            ) : tooSmall ? (
               <Text variant="caption" color="#ff6b6b" style={{ textAlign: 'center' }}>
                 This image is too small for a {spec.label.toLowerCase()}. Use one at least {Math.round(spec.outWidth * 0.4)} × {Math.round(spec.outHeight * 0.4)} pixels.
               </Text>
