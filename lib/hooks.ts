@@ -154,6 +154,8 @@ export function usePosts(sort: 'score' | 'latest' | 'following' | 'personal' = '
         // beyond that 500-cap (jack follows ~3k). So skip it for 'following'.
         // (followingIdsRef is still fetched for other uses; harmless if unused.)
         visible = filterMuted(visible);
+        // Posts imported from minds.com never belong to this app.
+        visible = visible.filter((p: any) => !p?.legacy_guid);
         data = data.concat(visible);
         if (data.length > 0 || raw.length === 0 || stale()) break;
       }
@@ -768,7 +770,8 @@ export function useProfilePosts(
         res = await fetchDeduped<any>(requestKey, requestPage);
       }
       if (stale()) return;
-      const page = res.data || [];
+      // Posts imported from minds.com never belong to this app.
+      const page = (res.data || []).filter((p: any) => !p?.legacy_guid);
       const raw = sdk
         ? page
         : page.filter((post: any) => articles ? isArticlePost(post) : !isArticlePost(post));

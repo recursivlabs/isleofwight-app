@@ -16,7 +16,7 @@ import { showToast } from '../../components/Toast';
 import * as Clipboard from 'expo-clipboard';
 import { Container } from '../../components/Container';
 import { useAuth } from '../../lib/auth';
-import { useConversations } from '../../lib/hooks';
+import { useConversations, useCommunities } from '../../lib/hooks';
 import { haptics } from '../../lib/haptics';
 import {
   getPreference,
@@ -222,6 +222,9 @@ function AuthenticatedChatScreen() {
   const params = useLocalSearchParams<{ id?: string; focused?: string; userId?: string }>();
   const { width } = useWindowDimensions();
   const { conversations, loading, refresh } = useConversations();
+  // Group rooms carry the community's picture and name, not the first member's.
+  const { communities: myCommunities } = useCommunities(100, { memberOnly: true });
+  const communityById = React.useMemo(() => { const m = new Map<string, any>(); for (const g of myCommunities || []) if (g?.id) m.set(g.id, g); return m; }, [myCommunities]);
   // Two-pane (list + open thread, X/iMessage-style) only on wide web. `focused`
   // is set when you deep-link a thread from the sidebar inbox — that inbox WAS
   // the list, so a second list column is redundant; show the thread full-bleed.
@@ -638,8 +641,9 @@ function AuthenticatedChatScreen() {
             const members = item.participants || item.members || [];
             const other = members.find((p: any) => (p?.user?.id ?? p?.id ?? p?.userId) !== user?.id) || members[0];
             const ou = other?.user || other || {};
-            const name = item.name || ou.name || other?.name || ou.username || other?.username || 'Conversation';
-            const avatar = ou.image || other?.image || ou.avatar || other?.avatar || ou.profile?.image || item.image || item.avatar || null;
+            const room = item.community_id || item.communityId ? communityById.get(item.community_id || item.communityId) : null;
+            const name = room?.name || item.name || ou.name || other?.name || ou.username || other?.username || 'Conversation';
+            const avatar = room?.image || (room ? null : (ou.image || other?.image || ou.avatar || other?.avatar || ou.profile?.image)) || item.image || item.avatar || null;
             const isAgentConvo = isAiActor(ou) || isAiActor(other);
             const lastMsg = item.lastMessage || item.last_message;
             const lastText = stripMarkdown(lastMsg?.content || lastMsg?.text || '');

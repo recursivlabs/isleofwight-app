@@ -13,7 +13,7 @@ import { ScreenHeader } from '../../components/ScreenHeader';
 import { TabBar } from '../../components/TabBar';
 import { useAuth } from '../../lib/auth';
 import { isValidUsername, sanitizeUsername } from '../../lib/username';
-import { useProfile, useMyProfile, useCommunities, useProfilePosts } from '../../lib/hooks';
+import { useProfile, useMyProfile, useCommunities, useProfilePosts, useProfiles } from '../../lib/hooks';
 import { ORG_ID, publicMinds, SITE_URL } from '../../lib/recursiv';
 import { otpSignInPath } from '../../lib/authRedirect';
 import { getFollowRelationship, blockUser, unblockUser, muteUser, unmuteUser, getBlockedUsers, getMutedUsers } from '../../lib/moderation';
@@ -304,27 +304,27 @@ export default function UserProfileScreen() {
   // Lazy-load followers / following
   React.useEffect(() => {
     if (!profile?.id) return;
-    if (profileTab !== 'followers' && profileTab !== 'following') return;
-    const needsLoad =
-      (profileTab === 'followers' && followersList === null) ||
-      (profileTab === 'following' && followingList === null);
-    if (!needsLoad) return;
+    // Both lists load with the profile: the counts shown are derived from
+    // them, scoped to this app's members, not the network-wide totals.
+    if (followersList !== null && followingList !== null) return;
 
     let cancelled = false;
     setRelationsLoading(true);
     (async () => {
       try {
         const profiles = sdk ? sdk.profiles : publicMinds.publicProfiles;
-        const res = profileTab === 'followers'
-          ? await profiles.followers(profile.id, { limit: RELATIONSHIP_PAGE_SIZE, offset: 0 })
-          : await profiles.following(profile.id, { limit: RELATIONSHIP_PAGE_SIZE, offset: 0 });
-        const list = (res.data || []) as any[];
-        if (cancelled) return;
-        if (profileTab === 'followers') {
+        if (followersList === null) {
+          const res = await profiles.followers(profile.id, { limit: RELATIONSHIP_PAGE_SIZE, offset: 0 });
+          const list = (res.data || []) as any[];
+          if (cancelled) return;
           setFollowersList(list);
           setFollowersHasMore(relationshipHasMore(res, list));
           followersOffsetRef.current = list.length;
-        } else {
+        }
+        if (followingList === null) {
+          const res = await profiles.following(profile.id, { limit: RELATIONSHIP_PAGE_SIZE, offset: 0 });
+          const list = (res.data || []) as any[];
+          if (cancelled) return;
           setFollowingList(list);
           setFollowingHasMore(relationshipHasMore(res, list));
           followingOffsetRef.current = list.length;
@@ -412,8 +412,13 @@ export default function UserProfileScreen() {
 
   // Counts via the centralized, unit-tested accessors (handles the
   // followers_count vs follower_count drift that caused a real bug).
-  const baseFollowerCount = profileFollowerCount(profile);
-  const followingCount = profileFollowingCount(profile);
+  // Follow counts are scoped to this app's members; the profile row carries
+  // network-wide totals from minds.com.
+  const { profiles: appMembers } = useProfiles(500);
+  const appMemberIds = React.useMemo(() => new Set((appMembers || []).map((m: any) => m?.id).filter(Boolean)), [appMembers]);
+  const inApp = React.useCallback((u: any) => appMemberIds.has(u?.id ?? u?.user?.id), [appMemberIds]);
+  const baseFollowerCount = followersList ? followersList.filter(inApp).length : 0;
+  const followingCount = followingList ? followingList.filter(inApp).length : 0;
   // Optimistic follower delta, anchored to the server count it was applied on
   // top of. Deriving the shown count this way (instead of adding a free-floating
   // offset) means the moment a profile refresh lands with the already-updated
@@ -1008,7 +1013,7 @@ export default function UserProfileScreen() {
         {/* Articles */}
         {/* Followers */}
         {profileTab === 'followers' && (() => {
-          const visible = (followersList || []).filter((u: any) => matchText(u.name, u.username, u.bio));
+          const visible = (followersList || []).filter((u: any) => inApp(u) && matchText(u.name, u.username, u.bio));
           return (
           relationsLoading && followersList === null ? (
             <View style={{ padding: spacing.xl, gap: spacing.lg }}>{[1, 2, 3].map(i => <Skeleton key={i} height={60} />)}</View>
@@ -1039,7 +1044,7 @@ export default function UserProfileScreen() {
 
         {/* Following */}
         {profileTab === 'following' && (() => {
-          const visible = (followingList || []).filter((u: any) => matchText(u.name, u.username, u.bio));
+          const visible = (followingList || []).filter((u: any) => inApp(u) && matchText(u.name, u.username, u.bio));
           return (
           relationsLoading && followingList === null ? (
             <View style={{ padding: spacing.xl, gap: spacing.lg }}>{[1, 2, 3].map(i => <Skeleton key={i} height={60} />)}</View>
