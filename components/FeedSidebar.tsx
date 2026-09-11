@@ -351,7 +351,7 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
   const sections: Record<string, React.ReactNode> = {
     whatsHappening: trends.length >= 2 ? (
       <SidebarSection
-        title="What's happening"
+        title="Trending on Wight.social"
         icon="pulse-outline"
         onSeeAll={() => router.push('/(tabs)/discover' as any)}
       >
@@ -615,9 +615,9 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
   // topic-extraction "What's happening" and the niche Agents/Groups widgets are
   // dropped — less, but each one is good. Content and people are what matter.
   const ORDERS: Record<SidebarContext, string[]> = {
-    feed: ['posts', 'creators'],
-    discover: ['posts', 'creators'],
-    notifications: ['posts', 'creators'],
+    feed: ['whatsHappening', 'posts', 'creators'],
+    discover: ['whatsHappening', 'posts', 'creators'],
+    notifications: ['whatsHappening', 'posts', 'creators'],
     profile: ['creators', 'posts'],
     community: ['communities', 'creators'],
     communities: ['communities', 'creators'],
