@@ -299,7 +299,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? BULB_DARK : BULB}
                   style={{ width: 40, height: 40 }}
                   contentFit="contain"
-                  accessibilityLabel="Minds"
+                  accessibilityLabel="Isle of Wight"
                 />
               ) : (
                 // Expanded: full Minds wordmark logo, matched to the theme.
@@ -308,7 +308,7 @@ export function SideNav({ collapsed, onToggle }: SideNavProps) {
                   source={isDark ? LOGO_DARK : LOGO_LIGHT}
                   style={{ width: 91, height: 35 }}
                   contentFit="contain"
-                  accessibilityLabel="Minds"
+                  accessibilityLabel="Isle of Wight"
                 />
               )}
             </Pressable>
