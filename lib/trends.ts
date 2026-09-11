@@ -157,6 +157,9 @@ export function computeTrends(posts: any[], limit = 4): Trend[] {
       return { b, score };
     })
     .sort((a, z) => z.score - a.score)
+    // Hashtags read as topics; extracted phrases and link hosts are noisy
+    // (a newspaper name, a country). Show phrases only when tags are scarce.
+    .filter((x, _i, all) => all.filter((y) => y.b.label.startsWith('#')).length >= 2 ? x.b.label.startsWith('#') : true)
     .slice(0, limit)
     .map(({ b }) => ({
       key: b.label,
