@@ -1245,7 +1245,7 @@ export default function LandingScreen() {
               marginTop: spacing.md,
             }}
           >
-            think freely
+            island news, groups and chat
           </Text>
 
         </View>

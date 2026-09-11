@@ -677,7 +677,7 @@ export function FeedSidebar({ context = 'feed', feedPosts, relatedTo, group }: {
 
       {/* Upgrade card — X sells Premium at the top of the rail; more room here
           than the nav item for a real pitch. Tier-aware: upsell the next tier. */}
-      {nextTier ? (
+      {false && nextTier ? (
         <Card style={{ backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border }}>
           <View style={{ gap: spacing.sm }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
