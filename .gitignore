@@ -20,3 +20,4 @@ android/
 playwright-report/
 test-results/
 play-service-account.json
+node_modules
