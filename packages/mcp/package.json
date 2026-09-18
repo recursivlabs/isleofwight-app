@@ -27,10 +27,10 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@recursiv/mcp": "0.5.1",
-    "@recursiv/sdk": "0.7.6",
+    "@recursiv/mcp": "0.5.4",
+    "@recursiv/sdk": "0.7.27",
     "dotenv": "^16.6.1",
-    "zod": "^4.5.4"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "tsx": "^4.23.13",
